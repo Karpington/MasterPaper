@@ -1,0 +1,46 @@
+% Adapted and condensed from the author's thesis, 05_Realisierung_neu.tex:
+% fig:llm_orchestrierung_planner, fig:serverseitige_orchestrierung,
+% fig:llm_orchestrierung_ohne_planner. No internal tool names or business rules.
+% Compact teaser: the self-contained caption explains shared controls and
+% omitted clarification/confirmation paths. Arrows show logical processing.
+\begin{tikzpicture}[
+  font=\fontsize{8.5}{10}\selectfont, >=Latex,
+  box/.style={draw,rounded corners=2pt,align=center,inner sep=4pt,
+    text width=4.25cm,minimum height=0.50cm,fill=white},
+  heading/.style={align=center,text width=4.8cm,font=\fontsize{9}{11}\selectfont\bfseries},
+  arrow/.style={->,thick},
+  every node/.style={outer sep=1pt}
+]
+  \node[heading] at (0,0.65) {(a) LLM orchestration\\with planner};
+  \node[heading] at (5.65,0.65) {(b) Backend orchestration\\with planner};
+  \node[heading] at (11.3,0.65) {(c) LLM orchestration\\without planner};
+
+  \foreach \x/\p in {0/a,5.65/b,11.3/c} {
+    \node[box,fill=blue!10] (\p-input) at (\x,0) {User input and dialogue state};
+    \node[box] (\p-response) at (\x,-3.0) {Tool results / options};
+  }
+  \node[box] (a-plan) at (0,-0.75) {Planner: state and next step};
+  \node[box] (a-llm) at (0,-1.5) {LLM: select and order tool calls};
+  \node[box,fill=gray!8] (a-tools) at (0,-2.25)
+    {MCP: individual tools};
+
+  \node[box] (b-plan) at (5.65,-0.75) {Planner: state and next step};
+  \node[box] (b-llm) at (5.65,-1.5) {LLM: select a bundled tool};
+  \node[box,fill=gray!8] (b-tools) at (5.65,-2.25)
+    {MCP: bundled backend tools};
+
+  \node[box] (c-llm) at (11.3,-1.5)
+    {LLM: state and tool calls};
+  \node[box,fill=gray!8] (c-tools) at (11.3,-2.25)
+    {MCP: individual tools};
+
+  \foreach \p in {a,b} {
+    \draw[arrow] (\p-input.south) -- (\p-plan.north);
+    \draw[arrow] (\p-plan.south) -- (\p-llm.north);
+    \draw[arrow] (\p-llm.south) -- (\p-tools.north);
+    \draw[arrow] (\p-tools.south) -- (\p-response.north);
+  }
+  \draw[arrow] (c-input.south) -- (c-llm.north);
+  \draw[arrow] (c-llm.south) -- (c-tools.north);
+  \draw[arrow] (c-tools.south) -- (c-response.north);
+\end{tikzpicture}

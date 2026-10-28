@@ -1,0 +1,29 @@
+% Adapted from the author's thesis, 04_Systementwurf_Architektur_neu.tex,
+% fig:servicearchitektur_mcp. English labels and generalised service roles;
+% internal identifiers, data-system names and authorisation services omitted.
+\begin{tikzpicture}[
+  font=\fontsize{8.5}{10}\selectfont, >=Latex,
+  box/.style={draw,rounded corners=2pt,align=center,inner sep=5pt,
+    minimum height=1.05cm,text width=2.8cm,fill=white},
+  connection/.style={<->,thick},
+  every node/.style={outer sep=1pt}
+]
+  \draw[rounded corners=3pt,draw=black!55,fill=blue!3]
+    (1.55,-1.25) rectangle (10.55,3.25);
+  \node[anchor=north west,font=\fontsize{9}{11}\selectfont\bfseries]
+    at (1.7,3.12) {MCP-based extension};
+  \node[box,text width=1.2cm,fill=blue!10] (user) at (0,0) {User};
+  \node[box,text width=3cm] (client) at (3.65,0)
+    {\textbf{Dialogue client / host}\\Dialogue state\\MCP client};
+  \node[box,text width=2.3cm,minimum height=0.75cm] (llm) at (3.65,2)
+    {\textbf{Language model}};
+  \node[box,text width=2.6cm] (server) at (8.6,0)
+    {\textbf{MCP server}\\Defined tools\\Validation};
+  \node[box,text width=2.9cm] (services) at (13.4,0)
+    {\textbf{Existing service APIs}\\Scheduling and data services};
+  \draw[connection] (user.east) -- node[above,font=\fontsize{8}{9}\selectfont] {Dialogue} (client.west);
+  \draw[connection] (client.north) -- node[right,align=left]
+    {Interpretation and\\state updates} (llm.south);
+  \draw[connection] (client.east) -- node[above] {MCP} (server.west);
+  \draw[connection] (server.east) -- node[above] {API calls} (services.west);
+\end{tikzpicture}

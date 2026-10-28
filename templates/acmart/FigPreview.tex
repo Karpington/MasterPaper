@@ -1,0 +1,32 @@
+\makeatletter
+\def\input@path{{./template/}}
+\makeatother
+\documentclass[acmsmall]{acmart}
+\input{common/packages.tex}
+\input{common/commands.tex}
+\glsdisablehyper
+\makeglossaries
+\input{lists/acronyms.tex}
+\graphicspath{{./}, {../figs}, {./figs} ,{./template/}} 
+\AtBeginDocument{\providecommand\BibTeX{{Bib\TeX}}}
+\setcopyright{acmlicensed}
+\copyrightyear{2025}
+\acmYear{2025}
+\acmDOI{XXXXXXX.XXXXXXX}
+\acmJournal{JACM}
+\acmVolume{37}
+\acmNumber{4}
+\acmArticle{111}
+\acmMonth{8}
+\citestyle{acmauthoryear}
+\begin{document}
+\begin{figure*}[ht]
+    \begin{center}
+    \includesvg{figs/__BASE_NAME__}
+    \end{center}
+    \caption[Title Caption]{Text describing the figure.}
+\end{figure*}
+\end{document}
+\endinput
+
+

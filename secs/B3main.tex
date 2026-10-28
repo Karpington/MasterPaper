@@ -1,0 +1,62 @@
+\section{Main Part}\label{Sec:MainPart}
+
+\subsection{Selected design figures from the thesis}
+The figures adapt the thesis schematics with English labels and generalised component names.
+The opening Figure~\ref{fig:paper-orchestration}, placed before the abstract, compares the three orchestration variants.
+Figure~\ref{fig:paper-architecture} summarises the integration architecture,
+and Figure~\ref{fig:paper-dialogue-state} shows how state is carried across dialogue turns.
+The architecture spans both columns to retain readable labels;
+the dialogue-state diagram is arranged vertically within one column.
+
+\begin{figure*}[t]
+    \centering
+    \resizebox{\textwidth}{!}{\input{figs/paper_architecture.tex}}
+    \caption{Generalised architecture of a scheduling assistant using the Model Context Protocol (MCP).
+    The user interacts with a dialogue client that maintains state and asks a language model to interpret inputs.
+    The client invokes tools on the MCP server, which validates requests and accesses existing scheduling and data services through their application programming interfaces (APIs).
+    Double-headed arrows represent requests and responses, not unrestricted model access to services.
+    Internal system names and deployment details are omitted.}
+    \label{fig:paper-architecture}
+\end{figure*}
+
+\begin{figure}[tb]
+    \centering
+    \resizebox{\columnwidth}{!}{\input{figs/paper_dialogue_state.tex}}
+    \caption{State handling across successive dialogue turns.
+    The processing stage combines the current user input with information retained from previous turns, following the selected orchestration variant.
+    It produces a response for the user and an updated dialogue state.
+    The right-hand feedback arrow carries that state into the next turn, so previously established information can be reused.}
+    \label{fig:paper-dialogue-state}
+\end{figure}
+
+\subsection{Testing some math}
+
+A regular formula
+
+\begin{equation}
+    x^2 + y^2 = z^2 
+\end{equation}
+and another one
+\begin{equation}
+    \left\Vert \vec{x} \right\Vert = \sqrt{\sum_{i=0}^{n}{x_i^2 + y_i^2}}.
+\end{equation}
+
+Here is something with matrices:
+\begin{equation}
+\bf{A}=
+\begin{bmatrix}
+    a & b & c\\
+    d & e & f\\
+\end{bmatrix}^\top.
+\end{equation}
+
+An some inline stuff $\sum a_i=\bf{B}$.
+
+\begin{table}
+    \caption[List of Symbols]{Keep a list of symbols in your paper.}
+    \label{tab:ListOfSymbols}
+    \resizebox{\columnwidth}{!}
+    {
+    \input{tabs/ListOfSymbols.tex}
+    }
+\end{table}

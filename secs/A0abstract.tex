@@ -1,0 +1,9 @@
+Integrating large language models (LLMs) with existing software requires more than selecting suitable tools: multi-step actions must be coordinated, dialogue context must be maintained, and consequential operations must remain under human control.
+This paper investigates the allocation of orchestration responsibilities in an MCP-based conversational scheduling assistant.
+The prototype exposes existing service capabilities through the Model Context Protocol (MCP) and combines structured dialogue state, server-side validation and explicit user confirmation before booking.
+Three variants are compared: LLM orchestration with a separate planner, backend orchestration with a planner, and LLM orchestration without a separate planner.
+A repeated scenario-based evaluation across three language models examines functional correctness, tool behaviour, response time, token usage and model-call cost, complemented by selected exception cases and exploratory user feedback.
+In the investigated prototype, additional planning did not provide a consistent reliability advantage, while bundling operations in backend tools introduced trade-offs between efficiency and correctness.
+The findings indicate that orchestration complexity should be justified by the task rather than assumed to improve performance.
+Clear tool boundaries, deterministic checks and human confirmation provide a practical basis for controlled integration.
+The conclusions are limited to the evaluated prototype and scenarios and do not establish a universally optimal orchestration strategy or production readiness.

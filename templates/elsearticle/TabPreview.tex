@@ -1,0 +1,19 @@
+\makeatletter
+\def\input@path{{./template/}}
+\makeatother
+\documentclass[final,3p,twocolumn]{elsarticle}
+\journal{Computers \& Graphics}
+\input{common/packages.tex}
+\input{common/commands.tex}
+\graphicspath{{./}, {../figs}, {./template/}} 
+\glsdisablehyper
+\makeglossaries
+\input{lists/acronyms.tex}
+\begin{document}
+\begin{table*}[ht]
+    \begin{center}
+    \input{tabs/__BASE_NAME__.tex}
+    \end{center}
+    \caption[Title Caption.]{Text describing the table.}
+\end{table*}
+\end{document}

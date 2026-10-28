@@ -1,0 +1,20 @@
+\makeatletter
+\def\input@path{{./template/}}
+\makeatother
+\documentclass[a4paper]{tufte-book}
+\input{common/packages.tex}
+\input{common/commands.tex}
+\glsdisablehyper
+\makeglossaries
+\input{lists/acronyms.tex}
+\graphicspath{{./}, {../figs}, {./template/}} 
+
+\begin{document}
+\begin{table*}[ht]
+    \begin{center}
+    \input{tabs/__BASE_NAME__.tex}
+    \end{center}
+    \caption[Title Caption.]{Text describing the table.}
+\end{table*}
+\end{document}
+

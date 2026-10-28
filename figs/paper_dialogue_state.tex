@@ -1,0 +1,23 @@
+% Adapted from the author's thesis, 05_Realisierung_neu.tex,
+% fig:dialogverarbeitung_workcontext. Reflowed for one paper column.
+% The implementation-specific context name is replaced by dialogue state.
+\begin{tikzpicture}[
+  font=\fontsize{8.5}{10}\selectfont, >=Latex,
+  box/.style={draw,rounded corners=2pt,align=center,inner sep=4pt,
+    minimum height=0.8cm,text width=2.5cm,fill=white},
+  arrow/.style={->,thick},
+  every node/.style={outer sep=1pt}
+]
+  \node[box,fill=blue!10] (message) at (0,0) {Current user input};
+  \node[box] (state) at (3.9,0) {Previous\\dialogue state};
+  \node[box,text width=3.5cm,minimum height=1cm] (process) at (1.95,-1.6)
+    {Dialogue processing\\according to the selected\\orchestration variant};
+  \node[box] (response) at (0,-3.2) {System response};
+  \node[box] (updated) at (3.9,-3.2) {Updated\\dialogue state};
+  \draw[arrow] (message.south) -- (process.north west);
+  \draw[arrow] (state.south) -- (process.north east);
+  \draw[arrow] (process.south west) -- (response.north);
+  \draw[arrow] (process.south east) -- (updated.north);
+  \draw[arrow] (updated.east) -- (5.7,-3.2) --
+    node[right,rotate=90,anchor=south] {Next dialogue turn} (5.7,0) -- (state.east);
+\end{tikzpicture}

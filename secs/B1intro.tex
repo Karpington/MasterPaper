@@ -1,0 +1,39 @@
+\section{Introduction}
+\label{sec:introduction}
+
+\textit{Working outline for a paper based on the master's thesis. The items below propose the manuscript structure and content; they are not a completed introduction or a report of results.}
+
+% Source mapping: thesis sections 1.1--1.3, 2, 4.1--4.2, 4.3--5.6,
+% 6.1--6.6, 7 and 8. Do not copy internal examples or identifiers.
+\begin{itemize}[leftmargin=*,itemsep=0.65em]
+  \item \textbf{1. Introduction and research question.}
+  Motivate natural-language assistance for multi-step scheduling tasks. Ask how the allocation of orchestration between a large language model (LLM) and backend logic affects reliability, response time and model usage. Outline the contributions: a Model Context Protocol (MCP)-based prototype, a comparison of three orchestration variants, and lessons for controlled tool use.
+
+  \item \textbf{2. Background and related work.}
+  Briefly introduce LLM tool use, MCP, dialogue state and human oversight. Position the study relative to API orchestration, planning and human--AI interaction. Focus on concepts needed for the comparison rather than reproducing the thesis's full technical background.
+
+  \item \textbf{3. Generalised use case and requirements.}
+  Describe a generic scheduling task: collect preferences, clarify missing information, retrieve suitable options and require explicit human confirmation before a binding action. State general requirements for validation, access control, context handling and understandable error responses. Use fictional examples without customer records or company-specific process rules.
+
+  \item \textbf{4. System design and orchestration variants.}
+  Show an abstract architecture with a dialogue client, an LLM, an MCP server and generic backend services. Explain structured dialogue state. Compare (a) LLM orchestration with a planner, (b) backend orchestration with a planner, and (c) LLM orchestration without a planner. Contrast tool granularity, responsibility for sequencing and deterministic checks. Use generic component labels rather than internal system or tool names.
+
+  \item \textbf{5. Evaluation methodology.}
+  Describe the thesis's repeated scenario-based comparison across model and orchestration configurations, followed by detailed tests of a selected configuration. Define functional success, correct tool behaviour, result correctness, response time, token usage and model-call cost. Explain aggregation and variability. Use the existing rule-based REST integration only as a qualitative reference: it does not implement an identical conversational task.
+
+  \item \textbf{6. Results and discussion.}
+  Reserve space for a compact comparison of reliability, latency and resource use. Discuss the additional planner and the trade-off between fine-grained tools and bundled backend operations. Include only results cleared for external disclosure; this outline reproduces no internal measurements or model rankings. Distinguish findings for the investigated prototype from general recommendations.
+
+  \item \textbf{7. Limitations and transferability.}
+  Address the limited scenarios, repetitions and model versions, possible effects of prompt development, and the absence of a backend-without-planner variant. Explain why the study is not a complete factorial comparison. Discuss limited user-study evidence and test-environment constraints without implying production readiness or comprehensive security assurance.
+
+  \item \textbf{8. Conclusion and future work.}
+  Summarise the answer to the research question and transferable principles: explicit tool boundaries, deterministic validation, structured context and human confirmation. Identify further comparisons, broader scenarios and longer-term evaluation as next steps.
+\end{itemize}
+
+\noindent\textbf{Optional material if space permits.}
+Exploratory user feedback, normal and exceptional cases, and robustness or concurrency testing may form short subsections. Describe their methods and limitations only at an abstract level unless their results are cleared for disclosure. Omit detailed implementation listings, deployment instructions, raw logs and full questionnaires.
+
+\medskip
+\noindent\textbf{Publication scope.}
+Focus on the general research problem, method and transferable design principles. Exclude internal application names, endpoints, infrastructure details, authentication configurations, complete prompts, screenshots, personal data, proprietary rules, operational volumes and internal costs. Check any later figures, tables or results for confidential information. Prepare the abstract and bibliography after the scope and evidence have been finalised.

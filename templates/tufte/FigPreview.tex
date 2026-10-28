@@ -1,0 +1,19 @@
+\makeatletter
+\def\input@path{{./template/}}
+\makeatother
+\documentclass[a4paper]{tufte-book}
+\input{common/packages.tex}
+\input{common/commands.tex}
+\glsdisablehyper
+\makeglossaries
+\input{lists/acronyms.tex}
+\graphicspath{{./}, {../figs}, {./template/}} 
+
+\begin{document}
+\begin{figure*}[ht]
+    \begin{center}
+    \includesvg{figs/__BASE_NAME__}
+    \end{center}
+    \caption[Title Caption.]{Text describing the figure.}
+\end{figure*}
+\end{document}
