@@ -1,11 +1,36 @@
-\section{Previous Work}\label{sec:PreviousWork}
-Test some citations~\cite{Alliez03RAC,Peng05T3M,Maglo153MC}.
+\section{Background and Related Work}\label{sec:PreviousWork}
+% Based on thesis sections 2 and 4.1--4.2. Claims checked against original sources.
+% Source results and their implications for our design are distinguished below.
+MCP separates the host application's coordination responsibilities from the capabilities exposed by servers~\cite{MCP2025Architecture}.
+In this paper, dialogue state denotes the structured information retained across turns.
+Four studies inform the use of tools, their orchestration and user control.
 
-Here is another citation~\cite{Mlakar24EEC}.
+\textbf{ToolLLM.}
+The framework addresses the training and evaluation of language models for real-world API use.
+The ToolBench dataset covers 16,464 RESTful APIs, while a depth-first search method explores alternative sequences of calls.
+The resulting ToolLLaMA model demonstrates multi-tool execution and generalisation to unseen APIs in the reported evaluation~\cite{qin2024toolllm}.
+This supports studying tool selection and sequencing together.
+Our prototype instead uses existing models with a small, predefined set of MCP tools and requires no model training.
 
-We will show in Section~\ref{Sec:MainPart}, we can fancy stuff.
+\textbf{RestGPT.}
+This approach separates task planning, API selection and execution.
+The system uses API descriptions to construct calls and process responses, then feeds execution results back into planning.
+On RestBench, covering TMDB and Spotify tasks, removing the planner reduces success rates~\cite{song2023restgpt}.
+This motivates our comparison of orchestration with and without a separate planner.
+The reported benefit applies to the evaluated benchmark and architecture, so its transfer to a bounded scheduling workflow requires evaluation.
 
-Write one line per phrase.
-Do it like this.
+\textbf{AI Chains.}
+This approach connects multiple model calls so that each step can use earlier outputs.
+An interactive interface exposes intermediate results and allows users to modify individual steps.
+A study with 20 participants found improved task outcomes and perceived transparency, controllability and collaboration compared with a non-chaining interface~\cite{wu2022aichains}.
+For our design, this motivates explicit intermediate state and opportunities for correction, while leaving the allocation of tool orchestration to be investigated.
 
-Add a new line to get a new paragraph.
+\textbf{Guidelines for Human-AI Interaction.}
+This work presents 18 design guidelines evaluated through several rounds, including a study with 49 practitioners examining 20 AI-enabled products.
+The guidelines address communicating capabilities, correcting errors, clarifying uncertain goals and remembering recent interactions~\cite{amershi2019guidelines}.
+These principles inform our dialogue design.
+The requirement for explicit confirmation before booking is our application-specific implementation of human control.
+
+Together, these studies connect tool capability, modular processing and human oversight.
+Our study applies these perspectives to an MCP-based scheduling assistant and compares three implementations that distribute planning and execution between the LLM and backend.
+Its focus is the resulting reliability and efficiency trade-offs within this controlled workflow.

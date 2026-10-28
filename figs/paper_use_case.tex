@@ -1,0 +1,33 @@
+% Generalised from 03_Unternehmenshintergrund_Use_Case_neu.tex:
+% fig:fachlicher_terminierungsablauf and the dialogue-support requirements.
+% Company-specific branches, identifiers and optional email handling are omitted.
+\begin{tikzpicture}[
+  font=\fontsize{8.5}{10}\selectfont, >=Latex,
+  box/.style={draw,rounded corners=2pt,align=center,inner sep=4pt,
+    minimum height=0.6cm,text width=4.4cm,fill=white},
+  human/.style={box,fill=blue!10},
+  system/.style={box,fill=black!4},
+  arrow/.style={->,thick},
+  every node/.style={outer sep=1pt}
+]
+  \node[human] (request) at (0,0) {Enter and clarify preferences};
+  \node[system] (search) at (0,-0.95) {Retrieve available options};
+  \node[human] (review) at (0,-1.9) {Review and select an option};
+  \node[human,line width=1pt] (confirm) at (0,-2.85)
+    {Explicit booking confirmation};
+  \node[system] (book) at (0,-3.8) {Validate and execute booking};
+  \node[system] (outcome) at (0,-4.75) {Report outcome};
+
+  \draw[arrow] (request) -- (search);
+  \draw[arrow] (search) -- (review);
+  \draw[arrow] (review) -- (confirm);
+  \draw[arrow] (confirm) -- (book);
+  \draw[arrow] (book) -- (outcome);
+
+  \draw[arrow] (search.west) -- (-3.15,-0.95) --
+    node[left,rotate=90,anchor=south,font=\fontsize{7.5}{9}\selectfont]
+      {No suitable option} (-3.15,0) -- (request.west);
+  \draw[arrow] (review.east) -- (3.15,-1.9) --
+    node[right,rotate=90,anchor=north,font=\fontsize{7.5}{9}\selectfont]
+      {Revise details} (3.15,0) -- (request.east);
+\end{tikzpicture}

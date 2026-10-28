@@ -1,12 +1,59 @@
-\section{Main Part}\label{Sec:MainPart}
+\section{Use Case and Requirements}\label{sec:requirements}
+% Derived from thesis chapter 3, especially the use case and requirements.
+% Company-specific appointment types, identifiers and access mechanisms are omitted.
+The use case concerns an authorised staff member arranging an appointment during a customer interaction.
+The customer is already identified within the existing process and has expressed an interest in an appointment.
+The assistant supports scheduling through natural-language input.
+Direct customer access, professional advice and changes to confirmed bookings are outside its scope.
 
-\subsection{Selected design figures from the thesis}
-The figures adapt the thesis schematics with English labels and generalised component names.
-The opening Figure~\ref{fig:paper-orchestration}, placed before the abstract, compares the three orchestration variants.
-Figure~\ref{fig:paper-architecture} summarises the integration architecture,
-and Figure~\ref{fig:paper-dialogue-state} shows how state is carried across dialogue turns.
-The architecture spans both columns to retain readable labels;
-the dialogue-state diagram is arranged vertically within one column.
+Figure~\ref{fig:paper-use-case} summarises the workflow.
+The staff member enters the appointment request and relevant time and location preferences.
+Missing or ambiguous information is clarified before dependent operations proceed.
+Available options are retrieved and reviewed with the customer.
+If no suitable option is found or preferences change, the request can be revised.
+Booking requires the customer's agreement and an explicit confirmation by the staff member.
+The application then validates and executes the request and reports its outcome.
+A confirmation email can follow a successful booking if a valid address is available.
+
+\begin{figure}[!htb]
+    \centering
+    \resizebox{\columnwidth}{!}{\input{figs/paper_use_case.tex}}
+    \caption{Generalised scheduling workflow for a staff-operated conversational assistant.
+    Arrows show the order of actions, while the return paths allow revised preferences and a new search.
+    Blue boxes mark staff input or review, and the bold outline marks the required explicit confirmation after agreement with the customer.
+    Grey boxes mark application operations.
+    Booking remains subject to validation.
+    Cancellation and failure handling apply throughout but are omitted from the diagram.}
+    \label{fig:paper-use-case}
+\end{figure}
+
+The requirements cover context handling, controlled execution and clear feedback.
+Information must persist across dialogue turns and remain correctable before booking.
+Changes must invalidate dependent information, such as outdated appointment options.
+Access must remain restricted to authorised users and permitted records, and model input must be limited to information needed for the task.
+Tool parameters and booking conditions require application-side checks.
+Unavailable appointments must be distinguished from technical failures, and a booking must only be reported as successful after the service confirms it.
+The staff member must be able to cancel before booking.
+Responses should be concise, and processing delays should support use during an ongoing conversation.
+\FloatBarrier
+
+\section{System Design and Orchestration Variants}\label{Sec:MainPart}
+This section describes the shared architecture and dialogue state before introducing the three orchestration variants.
+
+% Derived from thesis architecture/context sections and implementation section 5.4.
+% Only generic component responsibilities and orchestration mechanisms are described.
+\subsection{Architecture and Dialogue State}
+The prototype adds a conversational interface to existing services, as shown in Figure~\ref{fig:paper-architecture}.
+The dialogue client acts as the MCP host, manages the interaction and invokes the language model.
+An embedded MCP client communicates with a separate MCP server, which exposes the scheduling functions as tools and accesses existing services through their APIs.
+The application executes model-selected tool calls through this connection.
+The language model has no direct access to the underlying services.
+
+The dialogue client maintains structured state containing known preferences, missing information and the current processing step.
+Each new input is interpreted together with this state, producing a response and an updated state for the next turn (Figure~\ref{fig:paper-dialogue-state}).
+The server separately retains intermediate service results needed by subsequent operations.
+This separation allows reusable results to remain available without placing all service data in the model context.
+Corrections update the relevant state and invalidate dependent results before processing continues.
 
 \begin{figure*}[t]
     \centering
@@ -29,7 +76,32 @@ the dialogue-state diagram is arranged vertically within one column.
     \label{fig:paper-dialogue-state}
 \end{figure}
 
-\subsection{Testing some math}
+\subsection{Orchestration Variants}
+The three variants in Figure~\ref{fig:paper-orchestration} share this architecture but differ in tool granularity and the use of a separate planning stage.
+
+\textbf{LLM orchestration with a planner.}
+Each new user input first triggers a model call that updates dialogue state and identifies the next task step.
+This planner does not select or execute tools.
+If information is missing, the application requests clarification.
+Otherwise, a subsequent model interaction selects and sequences individual MCP tools using their descriptions and the task instructions.
+Several dependent tool calls may follow, with the planner invoked again only when a new user input arrives.
+
+\textbf{Backend orchestration with a planner.}
+The same planning stage precedes tool selection, but the exposed tools bundle several operations.
+The language model selects a bundled tool, while the backend determines the sequence of its internal steps and passes intermediate results between them.
+This reduces the number of individual operations that the model must coordinate.
+Tool selection remains model-driven, so backend orchestration does not make the entire workflow deterministic.
+
+\textbf{LLM orchestration without a planner.}
+Individual MCP tools remain available, but the separate planning call is omitted.
+State updates, clarification and tool selection are handled together during model-driven dialogue processing.
+Tool results inform subsequent operations and the response to the staff member.
+
+All variants retain application-side validation and the explicit booking confirmation described in Section~\ref{sec:requirements}.
+Changing the allocation of orchestration therefore changes how operations are coordinated, while the application remains responsible for controlling their execution.
+The evaluation examines whether the additional planning stage or bundled tools improve reliability and efficiency for the selected task.
+
+\subsection*{Template examples: mathematics and tables}
 
 A regular formula
 
