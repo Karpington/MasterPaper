@@ -10,6 +10,15 @@
 \BibtexOrBiblatex
 \electronicVersion
 \PrintedOrElectronic
+% Retain the Eurographics layout without unassigned publication metadata.
+\copyrightTextTitPag{}
+\copyrightTextRunPag{}
+\EGlocalpagenumber
+\makeatletter
+\let\ps@titlepage\ps@headings
+\def\@oddfoot{}
+\def\@evenfoot{}
+\makeatother
 \usepackage[pdftex]{graphicx}
 \usepackage{egweblnk} 
 \input{common/packages.tex}
@@ -32,6 +41,8 @@
 \input{lists/acronyms.tex}
 
 \title[MCP-Based Scheduling Orchestration]{Orchestrating MCP-Based Scheduling Assistants:\\Comparing LLM and Backend Control}
+% Reduce unused space below the affiliations to accommodate the taller teaser.
+\setlength{\titlespace}{-25pt}
 \begin{document}
 \teaser
 {
@@ -40,31 +51,19 @@
 \maketitle
 \hypersetup{
   pdftitle={Orchestrating MCP-Based Scheduling Assistants: Comparing LLM and Backend Control},
-  pdfsubject={Research paper outline},
+  pdfsubject={MCP-based scheduling orchestration: design and comparative evaluation},
   pdfkeywords={Model Context Protocol, large language models, orchestration, scheduling, human oversight}
 }
 \begin{abstract}
 \input{secs/A0abstract.tex}
-%  ACM CCS 2012 
-(see https://www.acm.org/publications/class-2012)
-%Use http://dl.acm.org/ccs.cfm to generate the file.
-\begin{CCSXML}
-<ccs2012>
-<concept>
-<concept_id>10010147.10010371.10010352.10010381</concept_id>
-<concept_desc>Computing methodologies~Collision detection</concept_desc>
-<concept_significance>300</concept_significance>
-</concept>
-\end{CCSXML}
-\ccsdesc[300]{Computing methodologies~Collision detection}
-
-\printccsdesc 
 \end{abstract}
 % The explanatory orchestration teaser and full abstract fill the opening page.
 % Restart the two-column body on the next page, beginning with the left column.
 \twocolumn
+\clubpenalty=10000
+\widowpenalty=10000
 \input{secs/structure.tex}
-\input{secs/C0ack.tex} 
 \bibliographystyle{./download/egPublStyle-cgf/eg-alpha-doi}
 \bibliography{common/bibliography}
+\flushcolsend
 \end{document}

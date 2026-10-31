@@ -2,7 +2,7 @@
 \label{sec:introduction}
 
 % Derived from thesis sections 1.1--1.3, with scope checked against chapters 7--8.
-% Internal system names, process rules, measurements and model rankings are omitted.
+% Internal system names and business-specific process rules are omitted.
 Large language models (LLMs) can use external tools to retrieve information and invoke software functions~\cite{Schick2023Toolformer}.
 In a conversational scheduling assistant, this capability must support a sequence of dependent actions: interpreting preferences, clarifying missing information, retrieving suitable options and confirming a booking.
 A plausible response alone is insufficient.
@@ -13,12 +13,13 @@ For the scheduling task considered here, a further design decision concerns orch
 The LLM can coordinate individual tools, or a backend tool can bundle several operations into a predefined sequence.
 A separate planning stage introduces another design choice whose value must be assessed alongside its additional processing effort.
 
-This paper investigates the following question: \textit{How can MCP-based orchestration approaches support conversational scheduling under human control, and how do they differ in functional reliability, response time and model usage?}
+This paper investigates the following question: \textit{How can an MCP-based scheduling assistant be designed for human control, and how can its model and orchestration configuration be selected and evaluated?}
 We examine a prototype that connects a conversational interface to existing service capabilities, maintains structured dialogue state and requires explicit user confirmation before booking.
-As shown in Figure~\ref{fig:paper-orchestration}, the study compares LLM orchestration with a planner, backend orchestration with a planner, and LLM orchestration without a separate planner.
+The selection stage compares LLM orchestration with a planner, backend orchestration with a planner, and LLM orchestration without a separate planner (Figure~\ref{fig:paper-orchestration}).
 
-The paper contributes the prototype design, a repeated scenario-based comparison across three language models, and an analysis of the resulting orchestration trade-offs.
-The evaluation considers functional correctness, tool behaviour, response time, token usage and model-call cost, supplemented by selected exception cases and exploratory user feedback.
-The comparison focuses on the implemented configurations within a bounded scheduling task.
-Its findings do not establish a universally optimal strategy or demonstrate production readiness.
+The contribution is an empirical case study of controlled tool use in a bounded scheduling workflow.
+It connects three aspects: a generalised design that separates model decisions from application controls, a configuration-selection study that distinguishes execution success from outcome correctness, and a subsequent assessment of the selected system through functional cases, direct prompt injection and user feedback.
+The selection also considers response time, token usage and model-call cost.
+Together, these results show where efficient tool execution can still fail to meet the task goal and where a working prototype needs further interaction and integration improvements.
+MCP is the shared integration layer, so the study evaluates orchestration choices rather than an intrinsic advantage of the protocol.
 The following sections present the background and requirements, system design, evaluation, and implications for comparable applications.

@@ -23,13 +23,18 @@ It has the following features:
 ## Native Windows (no Linux or WSL required)
 
 The selected template is **Eurographics / Computer Graphics Forum** (`templates/eg`),
-using the publisher's original two-column class. The draft contains Daniel Becker, the Coburg University and HUK-COBURG affiliations, and a thesis-based outline in the Introduction. The original page header, abstract, example sections, figures, tables, appendix, acknowledgements and references remain visible as template placeholders.
-Edit `templates/eg/main.tex` for the title/authors and `secs/` for the paper text. The optional layout diagnostic page is disabled and the example code wraps within its column.
+using the publisher's original two-column class. The manuscript contains Daniel Becker's thesis-based paper with Coburg University and HUK-COBURG affiliations, generalised figures, experimental results and references. Template placeholders are no longer included in the manuscript.
+Edit `templates/eg/main.tex` for the title/authors and `secs/` for the paper text.
 Do not edit `template/`: it is a generated copy refreshed by the build.
 
 Requirements:
 
 - MiKTeX or TeX Live, with `pdflatex`, `bibtex` and `makeindex` on PATH.
+- The `sttools` LaTeX bundle supplies `stfloats` for the wide table at the
+  bottom of a page and `flushend` for balancing the final page.
+  Install `sttools` through MiKTeX
+  Console if these packages are missing. Refresh its package catalogue first
+  if the bundle is not listed.
 - Inkscape for the included SVG figures. Its normal Windows installation in
   `C:\Program Files\Inkscape\bin` is detected automatically.
 - Windows PowerShell 5.1 (included in Windows) or PowerShell 7.

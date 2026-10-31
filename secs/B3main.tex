@@ -12,6 +12,7 @@ Missing or ambiguous information is clarified before dependent operations procee
 Available options are retrieved and reviewed with the customer.
 If no suitable option is found or preferences change, the request can be revised.
 Booking requires the customer's agreement and an explicit confirmation by the staff member.
+Selecting a returned option constitutes this confirmation, rather than an additional dialogue turn.
 The application then validates and executes the request and reports its outcome.
 A confirmation email can follow a successful booking if a valid address is available.
 
@@ -20,7 +21,7 @@ A confirmation email can follow a successful booking if a valid address is avail
     \resizebox{\columnwidth}{!}{\input{figs/paper_use_case.tex}}
     \caption{Generalised scheduling workflow for a staff-operated conversational assistant.
     Arrows show the order of actions, while the return paths allow revised preferences and a new search.
-    Blue boxes mark staff input or review, and the bold outline marks the required explicit confirmation after agreement with the customer.
+    Blue boxes mark staff input or review. Selecting an option in the bold box confirms the booking after agreement with the customer.
     Grey boxes mark application operations.
     Booking remains subject to validation.
     Cancellation and failure handling apply throughout but are omitted from the diagram.}
@@ -97,38 +98,6 @@ Individual MCP tools remain available, but the separate planning call is omitted
 State updates, clarification and tool selection are handled together during model-driven dialogue processing.
 Tool results inform subsequent operations and the response to the staff member.
 
-All variants retain application-side validation and the explicit booking confirmation described in Section~\ref{sec:requirements}.
-Changing the allocation of orchestration therefore changes how operations are coordinated, while the application remains responsible for controlling their execution.
-The evaluation examines whether the additional planning stage or bundled tools improve reliability and efficiency for the selected task.
-
-\subsection*{Template examples: mathematics and tables}
-
-A regular formula
-
-\begin{equation}
-    x^2 + y^2 = z^2 
-\end{equation}
-and another one
-\begin{equation}
-    \left\Vert \vec{x} \right\Vert = \sqrt{\sum_{i=0}^{n}{x_i^2 + y_i^2}}.
-\end{equation}
-
-Here is something with matrices:
-\begin{equation}
-\bf{A}=
-\begin{bmatrix}
-    a & b & c\\
-    d & e & f\\
-\end{bmatrix}^\top.
-\end{equation}
-
-An some inline stuff $\sum a_i=\bf{B}$.
-
-\begin{table}
-    \caption[List of Symbols]{Keep a list of symbols in your paper.}
-    \label{tab:ListOfSymbols}
-    \resizebox{\columnwidth}{!}
-    {
-    \input{tabs/ListOfSymbols.tex}
-    }
-\end{table}
+All variants retain application-side validation and the confirmation described in Section~\ref{sec:requirements}.
+The server resolves the selected option against stored search results before booking.
+Tool selection by the model therefore remains distinct from permission to execute the operation.

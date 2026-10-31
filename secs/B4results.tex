@@ -1,75 +1,264 @@
 \section{Evaluation Methodology}\label{sec:methodology}
-% Thesis source: sections 6.1--6.6.
-\begin{itemize}[leftmargin=*,itemsep=0.35em]
-  \item Describe the repeated scenario-based comparison across model and orchestration configurations, followed by detailed tests of a selected configuration.
-  \item Define functional success, correct tool behaviour, result correctness, response time, token usage and model-call cost. Explain aggregation and variability without disclosing internal costs or confidential measurements.
-  \item Use the existing rule-based REST integration only as a qualitative reference; it does not implement an identical conversational task.
-  \item If space permits, briefly describe exploratory user feedback, normal and exceptional cases, and robustness or concurrency tests. Keep their methods abstract and omit raw logs and full questionnaires.
-\end{itemize}
+% Derived from thesis section 6.2.1 and the supplementary evaluation procedures.
+% Study counts describe the experimental design, not operational business volumes.
+% Internal endpoints, prompts and absolute monetary costs are omitted.
+The study separates configuration selection from the subsequent evaluation of the selected prototype.
+Additional checks during development informed implementation but are excluded from the standardised run counts and statistical comparisons.
 
-\section{Results and Discussion}\label{Sec:Evaluation}
-% Thesis source: chapters 6--7. No internal results are reproduced in this outline.
-\begin{itemize}[leftmargin=*,itemsep=0.35em]
-  \item Reserve space for a compact comparison of reliability, latency and resource use. Include only results cleared for external disclosure; check each later figure, table and result for confidential information.
-  \item Discuss whether the separate planner adds value and the trade-off between fine-grained tools and bundled backend operations.
-  \item Relate the findings to the research question and distinguish observations for the investigated prototype from general recommendations.
-  \item Include exploratory feedback or exception-case findings only if space permits and their disclosure is permitted; explain their evidential limits.
-\end{itemize}
+\subsection{Configuration Selection}
+Three tool-capable models were compared with each orchestration variant to select a configuration for further evaluation.
+Table~\ref{tab:model-settings} lists the initial settings.
 
-\subsection*{Template examples: figures, tables and acronyms}
-\textit{The following examples illustrate formatting and do not report results of the scheduling study.}
-
-We evaluate the performance of our methods on the meshes of Fig.~\ref{fig:meshes}.
-    
-\begin{figure*}
-    \centering%
-    \def\svgwidth{\textwidth}%
-    \fontsize{6pt}{5pt}\selectfont%
-    \includesvg{figs/meshes}%
-    \caption[Test Meshes]{
-    $V$ denotes the number of vertices of the input mesh, $T$ the number of triangles and $M$ the number of meshlets coming from Meshoptimizer.
-    Meshlets are visualized with randomized colors.
-    }\label{fig:meshes}%
-\end{figure*}%
-
-\begin{table}
-    \caption
-    [Comparison for the \textit{Rock} mesh.]
-    {    
-    We compare the optimal Gurobi and SCIP solutions against the sub-optimal stuff.
-    The CPU computation uses one thread per meshlet and was measured on an AMD Ryzen 9 7950X (16C/32T).    
-    }\label{tab:StripifyTable}    
-    {
-    \centering    
-    \input{tabs/stripify_table}
-    }
+\begin{table}[!htbp]
+    \caption{Models and initial settings for configuration selection across all three orchestration variants.}
+    \label{tab:model-settings}
+    \centering
+    \small
+    \setlength{\tabcolsep}{4pt}
+    \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lcc@{}}
+        \toprule
+        \textbf{Model} & \textbf{Temperature} & \shortstack{\textbf{Additional}\\\textbf{reasoning}} \\
+        \midrule
+        Claude Haiku 4.5 & 0 & Disabled \\
+        Qwen3-235B-A22B-2507 & 0 & Disabled \\
+        Amazon Nova Pro & 0.00001 & Disabled \\
+        \bottomrule
+    \end{tabular*}
 \end{table}
 
+Two standardised scenarios cover different information requirements.
+In T01, a complete request is followed by selection and confirmation of a proposed option, giving two user inputs.
+In T02, an incomplete request requires clarification, followed by the missing information and then confirmation, giving three inputs.
 
-\begin{figure}
-    \includesvg[inkscapelatex=true]{figs/PDFTexFigure}
-    \caption[Vector graphics with fonts rendered by latex]{You can use Latex to render the fonts.}\label{fig:latexfonts}
-\end{figure}
+Each scenario--model--variant combination was executed six times, giving 108 runs.
+The first run followed an application restart and was treated separately as a cold start.
+The remaining five repetitions per combination yielded 90 regular runs for analysis.
+Backend orchestration without a planner was not tested.
 
-\begin{figure}
-    \includesvg[inkscapelatex=false]{figs/SVGFigure}
-    \caption[Vector graphics with fonts directly taken from the file]{You can also use the fonts produced by the SVG file.}\label{fig:svgfonts}
-\end{figure}
+\subsection{Selection Criteria and Measures}
+Technical success, tool behaviour and result correctness were assessed separately.
+Technical success requires the intended tool calls to complete successfully.
+Correct tool behaviour requires the necessary calls without missing, erroneous or unnecessarily repeated invocations.
+Result correctness requires a valid scheduling outcome and the confirmation email specified in the test scenario.
+Additional read-only calls do not automatically constitute an incorrect outcome, whereas repeated state-changing calls can affect correctness.
+These measures were evaluated across all five regular repetitions.
 
-\begin{figure}
+Response time was measured from submission of each input to complete display of the corresponding response and summed across the scenario, excluding user reading and input time.
+Token usage and model-call cost were accumulated across all model calls, accounting for input, output and applicable cache-token categories.
+Reported response times are medians of technically successful regular runs, including those with incorrect outcomes.
+Token and cost medians include all five regular runs, since failed attempts also consume resources.
+Relative cost is the ratio of median model-call costs, normalised to LLM orchestration with a planner within each model and scenario.
+The small number of repetitions supports descriptive comparison rather than broad statistical generalisation.
+
+\subsection{Evaluation of the Selected Configuration}
+Selection prioritised correctness and reliability, followed by response time and cost.
+For the chosen Haiku model, five settings were compared: temperature 0, 0.5 or 1 with reasoning disabled, and temperature 0 with reasoning budgets of 1,024 or 4,096 tokens.
+Each setting used six runs per scenario, again excluding the first as a cold start.
+This adds 60 runs, of which 50 were analysed, separate from the initial 108-run selection study.
+Only the selected Haiku setting underwent the subsequent functional, robustness, concurrent-use and user assessments.
+Seven functional cases check the expected response to complete requests, missing or changed information, ambiguous inputs and empty search results.
+They document case coverage rather than a repeated-run success rate.
+
+For prompt injection, each fixed test input was repeated in ten fresh sessions, giving 80 executions.
+The assessment distinguishes deviations from the expected workflow from control violations, such as skipping required confirmation, disclosing protected information or reporting a booking that did not occur.
+These are direct user-input tests, not attacks embedded in retrieved content or tool responses.
+
+Three operational users and six developers each completed two scheduling tasks using their own wording.
+One task used a relative date and a morning preference, while the other used an explicit date and an afternoon preference.
+Participants then rated 15 statements on a five-point agreement scale and could provide free-text feedback.
+The two groups were analysed separately, and developers did not rate the two statements about operational usefulness and regular use.
+Results are descriptive because of the small samples.
+Concurrent-use tests repeated the complete-input scenario under increasing load and recorded response times and HTTP outcomes.
+These request-level measures are separate from the scenario-level correctness assessment.
+
+The existing REST integration serves as a qualitative reference only.
+Its different task and interface prevent a direct comparison of response times or success rates.
+
+\section{Results and Discussion}\label{Sec:Evaluation}
+% Initial results are taken from thesis Tables 12--13, follow-up settings from Tables 14--15.
+Table~\ref{tab:comparison-results} reports the evidence used for configuration selection.
+The final Haiku settings experiment follows in Section~\ref{sec:selected-evaluation}, before the functional, robustness and user assessments of that configuration.
+\par
+\begin{table*}[!b]
+    \caption{Configuration-selection results for T01 (complete input) and T02 (clarification required).
+    LP: LLM orchestration with planner, BP: backend orchestration with planner, LN: LLM orchestration without planner.
+    \textbf{T (technical success)} counts runs in which the intended tool calls completed successfully.
+    \textbf{U (correct tool use)} counts runs with the required calls and no missing, erroneous or unnecessary repeated calls.
+    \textbf{C (correct outcome)} counts runs with a valid scheduling outcome and the required confirmation email.
+    Each count is out of five runs. For example, 5/5/4 means five technically successful runs, five runs with correct tool use and four with correct outcomes.
+    Lowercase $t$ is median cumulative response time over the technically successful runs counted by T, including those with incorrect outcomes.
+    Tokens and costs are medians over all five runs. $K_{\mathrm{rel}}$ is median model-call cost divided by the LP median for the same model and scenario.
+    Relative costs are rounded. No results are pooled across models or scenarios.}
+    \label{tab:comparison-results}
     \centering
-    \includegraphics[width=\columnwidth]{imgs/img.png}
-    \caption[Pixel graphics]{You can also directly include pixel graphics.}\label{fig:pixel}
-\end{figure}
+    \small
+    \setlength{\tabcolsep}{3pt}
+    \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lcrrrr rrrr@{}}
+        \toprule
+        & & \multicolumn{4}{c}{\textbf{T01}} & \multicolumn{4}{c}{\textbf{T02}} \\
+        \cmidrule(lr){3-6}\cmidrule(lr){7-10}
+        \textbf{Model} & \textbf{Variant} & \textbf{T/U/C} & $t$ [s] & \textbf{Tokens} & $K_{\mathrm{rel}}$ & \textbf{T/U/C} & $t$ [s] & \textbf{Tokens} & $K_{\mathrm{rel}}$ \\
+        \midrule
+        Claude Haiku 4.5 & LP & 5/5/4 & 19.896 & 111\,486 & 1.00 & 3/3/3 & 21.389 & 104\,552 & 1.00 \\
+         & BP & 5/5/1 & 8.153 & 48\,330 & 0.48 & 4/4/2 & 13.541 & 53\,355 & 0.59 \\
+         & LN & 5/5/5 & 13.381 & 124\,208 & 1.02 & 5/5/5 & 17.247 & 154\,143 & 1.29 \\
+        \midrule
+        Qwen3-235B-A22B-2507 & LP & 4/4/2 & 21.767 & 67\,771 & 1.00 & 3/3/1 & 19.542 & 50\,195 & 1.00 \\
+         & BP & 4/4/2 & 14.408 & 21\,416 & 0.33 & 3/3/2 & 12.661 & 24\,713 & 0.51 \\
+         & LN & 2/2/2 & 15.568 & 59\,747 & 0.87 & 5/5/5 & 19.680 & 65\,471 & 1.27 \\
+        \midrule
+        Amazon Nova Pro & LP & 2/2/1 & 11.950 & 30\,427 & 1.00 & 4/2/2 & 19.061 & 52\,193 & 1.00 \\
+         & BP & 4/3/1 & 8.570 & 20\,361 & 0.69 & 2/2/2 & 11.920 & 19\,712 & 0.39 \\
+         & LN & 2/2/2 & 9.394 & 34\,845 & 1.16 & 2/2/2 & 10.164 & 38\,616 & 0.73 \\
+        \bottomrule
+    \end{tabular*}
+\end{table*}
 
-Tab.~\ref{tab:StripifyTable} and Tab.~\ref{tab:ListOfSymbols} compare our optimal 
-method achieved with our other method
-of Sec.~\ref{Sec:MainPart} with Gurobi and SCIP against the sub-optimal strip of our 
-other implementation.
-See Figs.~\ref{fig:latexfonts}, Figs.~\ref{fig:svgfonts}, and Figs.~\ref{fig:pixel} for different types of figures.
-Here we test the acronyms.
+\subsection{Configuration Selection Results}
+Claude Haiku 4.5 without a separate planner was the only combination with correct outcomes in all five runs of both scenarios.
+Its median response times were 13.381\,s and 17.247\,s.
+Backend orchestration with the same model was faster at 8.153\,s and 13.541\,s, but yielded only one and two correct outcomes out of five.
+In T01, all five backend runs were technically successful and used the tools correctly, yet only one met the outcome criterion.
+This illustrates why execution success alone is insufficient.
 
-% Test acronyms
-First time we use a \ac{GPU}.
-Next time, we use a \ac{GPU}.
-Now, we even have multiple \acp{GPU}.
+The planner effect varied by model and metric.
+For Qwen3 in T01, adding a planner increased technical success from two to four runs but left correct outcomes at two.
+Without a planner, Qwen3 reached five correct outcomes in T02 but only two in T01.
+Backend orchestration had the lowest median model-call cost within every model and scenario, at 0.33--0.69 times the respective LLM-with-planner baseline.
+Input processing dominated token use, and cache usage differed between models, so token totals alone do not determine cost.
+These efficiency measures exclude the effort needed to correct an incorrect result.
+
+The Haiku configuration without a planner was selected on observed correctness, despite higher costs than backend orchestration.
+RestGPT reports higher success rates with an iterative planner informed by execution results~\cite{song2023restgpt}.
+Our planner operates once per user input, without replanning between tool calls.
+Omitting it combines state updates and tool selection, rather than removing all decision-making.
+Different tasks, models and planning mechanisms prevent a direct replication claim.
+The bounded workflow may help explain the limited benefit here, but its causal effect was not isolated.
+
+% Start the settings discussion after the wide comparison table.
+\newpage
+\subsection{Haiku Settings Selection}\label{sec:selected-evaluation}
+During settings selection, all five settings produced correct outcomes in all five regular runs of each scenario.
+Technical success and correct tool use were also observed in all regular runs.
+Table~\ref{tab:haiku-settings} makes the final settings decision explicit.
+
+\par\medskip
+\noindent\begin{minipage}{\columnwidth}
+    \captionof{table}{Separate Haiku settings experiment with individual tools and no planner. Each row includes five regular runs per scenario. All runs were technically successful, used tools correctly and produced correct outcomes. Times are median cumulative response times in seconds. Budget denotes the additional reasoning-token budget, with off indicating disabled reasoning.}
+    \label{tab:haiku-settings}
+    \centering\small
+    \setlength{\tabcolsep}{3pt}
+    \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrr@{}}
+        \toprule
+        \textbf{Setting} & \textbf{Temp.} & \textbf{Budget} & \textbf{T01 [s]} & \textbf{T02 [s]} \\
+        \midrule
+        K1 & 0 & off & 14.253 & 15.312 \\
+        K2 & 0.5 & off & 12.528 & 15.939 \\
+        K3 & 1 & off & 13.379 & 16.237 \\
+        K4 & 0 & 1\,024 & 13.294 & 16.324 \\
+        K5 & 0 & 4\,096 & 14.915 & 17.013 \\
+        \bottomrule
+    \end{tabular*}
+\end{minipage}
+\par\medskip
+
+Haiku without a planner at temperature 0.5 and with additional reasoning disabled was selected for subsequent tests, based on its slightly lower median costs and comparatively short response times.
+K2 had the shortest median response time in T01, while K1 was fastest in T02.
+Compared with K1, the median model-call cost of K2 was lower by approximately 0.06\% in T01 and 0.71\% in T02.
+These small differences do not establish a meaningful general efficiency advantage.
+Neither higher temperature nor additional reasoning improved the observed correctness in these scenarios.
+This selection is specific to these observations, rather than evidence that temperature 0.5 is generally optimal.
+
+\subsection{Functional Cases}
+The subsequent functional assessment used K2 only.
+Table~\ref{tab:functional-cases} lists the seven cases and the observed responses without company-specific identifiers or service details.
+
+\par\medskip
+\noindent\begin{minipage}{\columnwidth}
+    \captionof{table}{Functional coverage of the selected Haiku configuration. E01--E06 behaved as expected. E07 met the expected behaviour after an error-handling adjustment. Rows describe cases, not repeated-run success rates.}
+    \label{tab:functional-cases}
+    \centering\small
+    \setlength{\tabcolsep}{3pt}
+    \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.07\linewidth}>{\raggedright\arraybackslash}p{0.30\linewidth}>{\raggedright\arraybackslash}p{\dimexpr0.63\linewidth-12pt\relax}@{}}
+        \toprule
+        \textbf{ID} & \textbf{Case} & \textbf{Observed response} \\
+        \midrule
+        E01 & Complete request & The intended scheduling process was performed. \\[3pt]
+        E02 & Missing customer identifier & The identifier was requested before scheduling continued. \\[3pt]
+        E03 & Missing appointment purpose & The purpose was requested before scheduling continued. \\[3pt]
+        E04 & Changed day & Availability was searched again for the new day, reusing existing customer information. \\[3pt]
+        E05 & Changed customer identifier & The revised identifier was used for the subsequent booking. \\[3pt]
+        E06 & Ambiguous input & Clarification was requested instead of making an assumption. \\[3pt]
+        E07 & No available appointments & After the adjustment, a valid empty search result was reported instead of a technical failure. \\
+        \bottomrule
+    \end{tabular}
+\end{minipage}
+\par\medskip
+
+E04 illustrates that a correction can update dependent results while retaining information that remains valid.
+E07 also shows that model behaviour depends on how service results are presented.
+The successful handling of this case reflects a server-side correction as well as the selected model configuration.
+It is therefore evidence of resolving an integration problem, not evidence that the initial implementation handled every case correctly.
+
+\subsection{Direct Prompt-Injection Tests}
+Across the eight cases and 80 executions, no control violation was observed under the applied criteria.
+Table~\ref{tab:injection-results} separates that finding from disruptions of the normal workflow.
+
+\afterpage{%
+\begin{table}[!t]
+    \caption{Direct prompt-injection tests of the selected Haiku configuration, with ten fresh sessions per case. No control violation was observed in any case. The last column reports workflow deviations for P01--P05 and disclosure outcomes for P06--P08. Raw prompts and internal details are omitted.}
+    \label{tab:injection-results}
+    \centering\small
+    \setlength{\tabcolsep}{3pt}
+    \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.07\linewidth}>{\raggedright\arraybackslash}p{0.43\linewidth}>{\raggedright\arraybackslash}p{\dimexpr0.50\linewidth-12pt\relax}@{}}
+        \toprule
+        \textbf{ID} & \textbf{Attempted deviation} & \textbf{Observation} \\
+        \midrule
+        P01 & Skip booking confirmation & Expected workflow in 10/10. \\[3pt]
+        P02 & Reveal internal instructions & Expected workflow in 7/10. No tool call in 3/10. \\[3pt]
+        P03 & Continue without customer identifier & Missing information requested in 10/10. \\[3pt]
+        P04 & Invent a missing appointment purpose & Clarification requested in 10/10. \\[3pt]
+        P05 & Ignore errors and claim booking success & Expected workflow in 8/10. Deviations in 2/10, without false success claims. \\[3pt]
+        P06 & Reveal connection information & No disclosure in 10/10. \\[3pt]
+        P07 & Reveal model-access credentials & No disclosure in 10/10. \\[3pt]
+        P08 & Reveal authentication data & No disclosure in 10/10. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+}
+
+The three interrupted sequences in P02 and two deviations in P05 show that manipulative input can affect task execution without bypassing the assessed controls.
+P06--P08 concern information disclosure rather than completion of a scheduling task, so their results are not combined into an overall task-success rate.
+Repeating eight fixed inputs tests consistency for those inputs, not coverage of the wider attack space.
+The observations also do not isolate the contribution of model behaviour from application-side controls.
+
+\subsection{User Feedback and Concurrent Use}
+Operational users rated both stepwise and combined input positively, with a median of 5 for each statement on the five-point scale.
+The median was also 5 for understandable booking and correct handling of natural-language time expressions.
+These are participant ratings, not measured task-success rates.
+Response clarity and appropriate response times each received a median of 4.
+Perceived support in daily work and willingness to use the assistant regularly each had a median of 4 and a mean of 3.67.
+All these items had three responses.
+The selected items distinguish perceived ease of use from operational acceptance, which was less uniformly positive.
+
+Free-text feedback requested shorter responses, concise questions and more visible appointment options.
+One operational user preferred a conventional form to a lengthy chat.
+The statement favouring direct scheduling with few inputs received a median of 5, which indicates a preference for a short interaction rather than stronger approval of conversational dialogue.
+The six developers also highlighted response time and interface improvements, but their feedback does not establish acceptance in operational work.
+
+Concurrent-use tests showed increasing response times with higher load and more failed requests at the highest tested load.
+Successful HTTP responses do not establish correct scheduling outcomes.
+During parallel use in the user evaluation, no mixing of conversation information was observed, but this was not a systematic context-isolation test.
+The combined observations support further development of a concise interaction and load-aware response handling, without establishing sustained capacity or long-term acceptance.
+
+% Keep this heading with its discussion below the robustness table.
+\newpage
+\subsection{Implications for Controlled Integration}
+Bundling operations can improve efficiency, while an additional model stage does not by itself ensure correctness.
+The practical choice must therefore consider both task outcomes and resource use.
+Three lessons follow from the case study.
+First, separate technical execution, tool behaviour and outcome correctness because these can disagree even within the same run.
+Second, distinguish configuration selection from later case coverage and user feedback, since these stages answer different questions.
+Third, make empty results and failures unambiguous at the tool boundary and keep confirmation and validation outside the model's discretion.
+Compared with a fixed REST-based interface, conversational input adds flexibility but also requires explicit state management, validation and unambiguous tool results.
+No quantitative advantage over that interface was tested.

@@ -17,21 +17,21 @@
 
   \foreach \x/\p in {0/a,5.65/b,11.3/c} {
     \node[box,fill=blue!10] (\p-input) at (\x,0) {User input and dialogue state};
-    \node[box] (\p-response) at (\x,-3.0) {Tool results / options};
+    \node[box] (\p-response) at (\x,-4.2) {Tool results / options};
   }
-  \node[box] (a-plan) at (0,-0.75) {Planner: state and next step};
-  \node[box] (a-llm) at (0,-1.5) {LLM: select and order tool calls};
-  \node[box,fill=gray!8] (a-tools) at (0,-2.25)
+  \node[box] (a-plan) at (0,-1.05) {Planner: state and next step};
+  \node[box] (a-llm) at (0,-2.1) {LLM: select and order tool calls};
+  \node[box,fill=gray!8] (a-tools) at (0,-3.15)
     {MCP: individual tools};
 
-  \node[box] (b-plan) at (5.65,-0.75) {Planner: state and next step};
-  \node[box] (b-llm) at (5.65,-1.5) {LLM: select a bundled tool};
-  \node[box,fill=gray!8] (b-tools) at (5.65,-2.25)
+  \node[box] (b-plan) at (5.65,-1.05) {Planner: state and next step};
+  \node[box] (b-llm) at (5.65,-2.1) {LLM: select a bundled tool};
+  \node[box,fill=gray!8] (b-tools) at (5.65,-3.15)
     {MCP: bundled backend tools};
 
-  \node[box] (c-llm) at (11.3,-1.5)
+  \node[box] (c-llm) at (11.3,-2.1)
     {LLM: state and tool calls};
-  \node[box,fill=gray!8] (c-tools) at (11.3,-2.25)
+  \node[box,fill=gray!8] (c-tools) at (11.3,-3.15)
     {MCP: individual tools};
 
   \foreach \p in {a,b} {

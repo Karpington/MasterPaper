@@ -3,12 +3,12 @@
 \caption[Comparison of three MCP-based orchestration variants]{%
 Orchestration of a scheduling assistant with a large language model (LLM) and Model Context Protocol (MCP) tools.
 Dialogue state stores information from earlier turns.
-\textbf{(a)} A separate planner updates that state and identifies the next step; the LLM selects and sequences individual tools.
-\textbf{(b)} The same planning stage precedes LLM selection of a bundled tool; the backend sequences its internal operations.
+\textbf{(a)} A separate planner updates that state and identifies the next step. The LLM selects and sequences individual tools.
+\textbf{(b)} The same planning stage precedes LLM selection of a bundled tool. The backend sequences its internal operations.
 \textbf{(c)} The LLM handles state updates and individual tool selection without a separate planner.
-Arrows show logical processing for complete inputs; blue marks inputs and grey marks tools.
+Arrows show logical processing for complete inputs. Blue marks inputs and grey marks tools.
 Client and server mediate every tool execution.
-All variants require clarification for missing information and explicit human confirmation plus deterministic validation before booking; these return paths are omitted.
+All variants require clarification for missing information and explicit human confirmation plus deterministic validation before booking. These return paths are omitted.
 }
 \label{fig:paper-orchestration}
 \label{fig:teaser}

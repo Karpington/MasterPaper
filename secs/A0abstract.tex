@@ -1,9 +1,11 @@
 Integrating large language models (LLMs) with existing software requires more than selecting suitable tools: multi-step actions must be coordinated, dialogue context must be maintained, and consequential operations must remain under human control.
-This paper investigates the allocation of orchestration responsibilities in an MCP-based conversational scheduling assistant.
+This paper presents the design, configuration selection and evaluation of an MCP-based conversational scheduling assistant.
 The prototype exposes existing service capabilities through the Model Context Protocol (MCP) and combines structured dialogue state, server-side validation and explicit user confirmation before booking.
-Three variants are compared: LLM orchestration with a separate planner, backend orchestration with a planner, and LLM orchestration without a separate planner.
-A repeated scenario-based evaluation across three language models examines functional correctness, tool behaviour, response time, token usage and model-call cost, complemented by selected exception cases and exploratory user feedback.
-In the investigated prototype, additional planning did not provide a consistent reliability advantage, while bundling operations in backend tools introduced trade-offs between efficiency and correctness.
-The findings indicate that orchestration complexity should be justified by the task rather than assumed to improve performance.
-Clear tool boundaries, deterministic checks and human confirmation provide a practical basis for controlled integration.
-The conclusions are limited to the evaluated prototype and scenarios and do not establish a universally optimal orchestration strategy or production readiness.
+A selection study compares three models and three orchestration variants on two scenarios, yielding 90 analysed runs after excluding cold starts.
+Claude Haiku 4.5 with individual tools and no separate planner produced correct outcomes in all five repetitions of each scenario and was selected for further evaluation.
+The comparison illustrates that technically successful tool calls need not produce correct outcomes.
+After a separate settings experiment with 50 analysed runs, only the chosen Haiku configuration was assessed on seven functional cases, 80 executions of eight direct prompt-injection inputs, concurrent use and exploratory feedback from three operational users and six developers.
+The functional cases met expectations after an error-handling adjustment for empty search results.
+No control violation was observed in the injection tests, although some inputs disrupted the expected workflow.
+User feedback favoured flexible input while identifying a need for concise responses and shorter delays.
+Selection results and subsequent observations provide task-specific evidence, not an independent model ranking or proof of production readiness.

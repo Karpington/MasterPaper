@@ -1,17 +1,50 @@
 \section{Limitations and Transferability}\label{sec:limitations}
-% Thesis source: chapters 7--8.
-\begin{itemize}[leftmargin=*,itemsep=0.35em]
-  \item Address the limited scenarios, repetitions and model versions, together with possible effects of prompt development.
-  \item Explain that the missing backend-without-planner variant prevents a complete factorial comparison.
-  \item Discuss the limited user-study evidence and test-environment constraints. Avoid claims of production readiness or comprehensive security assurance.
-\end{itemize}
+% Derived from thesis chapter 7. Internal infrastructure and capacity details are omitted.
+The findings apply to the implemented workflow and tested configurations, with limits on causal attribution and generalisation.
+
+\subsection{Scope of the Comparison}
+The small set of differentiated scheduling tools limits transfer to larger tool sets, overlapping capabilities or longer dependencies, where separate planning may be useful.
+The missing backend-without-planner variant prevents a complete comparison of both design choices.
+Backend orchestration also changes tool granularity, so its effect cannot be attributed to execution location alone.
+
+The selection stage compared three model versions on two standardised scenarios.
+With five regular repetitions, one run changes a success rate by 20 percentage points.
+Five successes do not establish a reliable population-level success rate.
+T01 and T02 supported selection and settings decisions, so their results are not independent confirmation of the selected configuration's performance.
+Later functional and robustness cases broadened coverage for Haiku only and cannot establish superiority over the untested alternatives.
+Prompts were developed using one evaluated model family, potentially favouring it despite shared prompts and tools across models within each variant.
+
+\subsection{Technical and Evaluation Limits}
+Date processing and error handling cover selected expressions and service responses.
+Response times also depend on external services.
+Latency medians exclude technically failed runs and use different sample sizes, so faster responses must be interpreted alongside success counts.
+The limited load tests do not establish sustained production capacity.
+
+Direct prompt-injection tests do not cover indirect attacks or establish comprehensive security.
+Ten repetitions of each fixed input assess consistency but do not provide 80 distinct attack patterns.
+The functional cases are reported as coverage checks, without repetition counts from which to estimate a success rate.
+One case required an implementation adjustment, so the later assessment includes development feedback rather than an unchanged-system validation alone.
+Concurrent use does not verify context isolation.
+Brief feedback from three operational users cannot establish long-term acceptance, and six developers cannot substitute for operational experience.
+Reporting aggregate results without prompts and run-level traces limits independent replication.
+Generalised case descriptions, settings and evaluation criteria allow the study design to be inspected, while internal identifiers, deployment details, access mechanisms and operational capacity figures are excluded.
+
+\subsection{Transferability}
+Explicit tool boundaries, structured state, deterministic validation, clear results and human confirmation provide design principles for other processes.
+Their suitability and the choice of orchestration require task-specific evaluation.
 
 \section{Conclusion and Future Work}\label{Sec:ConclusionAndFutureWork}
-\begin{itemize}[leftmargin=*,itemsep=0.35em]
-  \item Summarise the answer to the research question and transferable principles: explicit tool boundaries, deterministic validation, structured context and human confirmation.
-  \item Identify further comparisons, broader scenarios and longer-term evaluation as next steps.
-  \item Revisit the abstract once the final scope, evidence and conclusions have been established.
-\end{itemize}
+% Derived from thesis chapter 8. No additional results are introduced.
+This paper presented the design, selection and evaluation of an MCP-based scheduling assistant under human control.
+The prototype combines flexible language input with structured dialogue state, bounded tools and application-side validation.
+Explicit confirmation keeps the booking decision with the user.
 
-\subsection*{Template placeholder text}
-\lipsum[1-16]
+Haiku with individual tools and no separate planner was selected after five correct outcomes per selection scenario.
+The subsequent assessment covered seven functional cases, including one that required clearer handling of empty search results.
+The 80 direct prompt-injection executions produced no observed control violation, but some disrupted the intended workflow.
+Feedback from three operational users indicated that flexible input was useful while concise responses and low delays remained important.
+Together, these stages support a reasoned prototype choice and identify development needs, without establishing a universally optimal architecture.
+The main lesson is to assess outcome correctness separately from technical execution and to treat configuration selection, functional coverage and user acceptance as distinct sources of evidence.
+
+Future work should complete the comparison with backend orchestration without a planner and introduce independent scenarios, larger tool sets and more repetitions.
+Longer user studies, sustained load tests and targeted context-isolation and prompt-injection checks are needed before operational use.
