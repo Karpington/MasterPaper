@@ -3,7 +3,6 @@
 *.lof
 *.lot
 *.pdf_tex
-*.pdf
 *.bbl
 *.blg
 *.toc
@@ -16,7 +15,6 @@
 tabs/preview_tmp.tex
 figs/preview_tmp.tex
 .vscode/settings.json
-build/
 template/
 download/
 download

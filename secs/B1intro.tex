@@ -14,7 +14,9 @@ The LLM can coordinate individual tools, or a backend tool can bundle several op
 A separate planning stage introduces another design choice whose value must be assessed alongside its additional processing effort.
 
 This paper investigates the following question: \textit{How can an MCP-based scheduling assistant be designed for human control, and how can its model and orchestration configuration be selected and evaluated?}
-We examine a prototype that connects a conversational interface to existing service capabilities, maintains structured dialogue state and requires explicit user confirmation before booking.
+We examine a prototype that lets users access existing services through a chat interface.
+It stores relevant information from the conversation in a structured form.
+Users must explicitly confirm an appointment before it is booked.
 The selection stage compares LLM orchestration with a planner, backend orchestration with a planner, and LLM orchestration without a separate planner (Figure~\ref{fig:paper-orchestration}).
 
 The contribution is an empirical case study of controlled tool use in a bounded scheduling workflow.

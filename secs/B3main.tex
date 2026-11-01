@@ -4,7 +4,7 @@
 The use case concerns an authorised staff member arranging an appointment during a customer interaction.
 The customer is already identified within the existing process and has expressed an interest in an appointment.
 The assistant supports scheduling through natural-language input.
-Direct customer access, professional advice and changes to confirmed bookings are outside its scope.
+This work does not cover direct customer access, professional advice or changes to confirmed bookings.
 
 Figure~\ref{fig:paper-use-case} summarises the workflow.
 The staff member enters the appointment request and relevant time and location preferences.
@@ -67,15 +67,19 @@ Corrections update the relevant state and invalidate dependent results before pr
     \label{fig:paper-architecture}
 \end{figure*}
 
-\begin{figure}[tb]
+% Keep the dialogue-state diagram beside its explanation instead of queuing it
+% behind the full-width architecture figure.
+\par\medskip
+\noindent\begin{minipage}{\columnwidth}
     \centering
     \resizebox{\columnwidth}{!}{\input{figs/paper_dialogue_state.tex}}
-    \caption{State handling across successive dialogue turns.
+    \captionof{figure}{State handling across successive dialogue turns.
     The processing stage combines the current user input with information retained from previous turns, following the selected orchestration variant.
     It produces a response for the user and an updated dialogue state.
     The right-hand feedback arrow carries that state into the next turn, so previously established information can be reused.}
     \label{fig:paper-dialogue-state}
-\end{figure}
+\end{minipage}
+\par\medskip
 
 \subsection{Orchestration Variants}
 The three variants in Figure~\ref{fig:paper-orchestration} share this architecture but differ in tool granularity and the use of a separate planning stage.

@@ -1,7 +1,7 @@
 \section{Evaluation Methodology}\label{sec:methodology}
 % Derived from thesis section 6.2.1 and the supplementary evaluation procedures.
 % Study counts describe the experimental design, not operational business volumes.
-% Internal endpoints, prompts and absolute monetary costs are omitted.
+% Internal endpoints and prompts are omitted. Haiku costs use published token prices.
 The study separates configuration selection from the subsequent evaluation of the selected prototype.
 Additional checks during development informed implementation but are excluded from the standardised run counts and statistical comparisons.
 
@@ -47,38 +47,35 @@ Response time was measured from submission of each input to complete display of 
 Token usage and model-call cost were accumulated across all model calls, accounting for input, output and applicable cache-token categories.
 Reported response times are medians of technically successful regular runs, including those with incorrect outcomes.
 Token and cost medians include all five regular runs, since failed attempts also consume resources.
-Relative cost is the ratio of median model-call costs, normalised to LLM orchestration with a planner within each model and scenario.
+In Table~\ref{tab:comparison-results}, relative cost is the ratio of median model-call costs, normalised to LLM orchestration with a planner within each model and scenario.
 The small number of repetitions supports descriptive comparison rather than broad statistical generalisation.
 
 \subsection{Evaluation of the Selected Configuration}
 Selection prioritised correctness and reliability, followed by response time and cost.
-For the chosen Haiku model, five settings were compared: temperature 0, 0.5 or 1 with reasoning disabled, and temperature 0 with reasoning budgets of 1,024 or 4,096 tokens.
-Each setting used six runs per scenario, again excluding the first as a cold start.
-This adds 60 runs, of which 50 were analysed, separate from the initial 108-run selection study.
-Only the selected Haiku setting underwent the subsequent functional, robustness, concurrent-use and user assessments.
-Seven functional cases check the expected response to complete requests, missing or changed information, ambiguous inputs and empty search results.
-They document case coverage rather than a repeated-run success rate.
+For Claude Haiku 4.5, five settings were compared using individual tools and no separate planner.
+Table~\ref{tab:haiku-configurations} lists the temperature and additional reasoning budget for each setting.
 
-For prompt injection, each fixed test input was repeated in ten fresh sessions, giving 80 executions.
-The assessment distinguishes deviations from the expected workflow from control violations, such as skipping required confirmation, disclosing protected information or reporting a booking that did not occur.
-These are direct user-input tests, not attacks embedded in retrieved content or tool responses.
+\par\medskip
+\noindent\begin{minipage}{\columnwidth}
+    \captionof{table}{Haiku settings compared on T01 and T02. Disabled means that no additional reasoning was used. K2 was selected for the subsequent evaluation, as discussed in Section~\ref{sec:selected-evaluation}.}
+    \label{tab:haiku-configurations}
+    \centering\small
+    \setlength{\tabcolsep}{4pt}
+    \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lcr@{}}
+        \toprule
+        \textbf{Setting} & \textbf{Temperature} & \shortstack{\textbf{Reasoning budget}\\\textbf{[tokens]}} \\
+        \midrule
+        K1 & 0 & Disabled \\
+        \textbf{K2} & \textbf{0.5} & \textbf{Disabled} \\
+        K3 & 1 & Disabled \\
+        K4 & 0 & 1\,024 \\
+        K5 & 0 & 4\,096 \\
+        \bottomrule
+    \end{tabular*}
+\end{minipage}
+\par\medskip
 
-Three operational users and six developers each completed two scheduling tasks using their own wording.
-One task used a relative date and a morning preference, while the other used an explicit date and an afternoon preference.
-Participants then rated 15 statements on a five-point agreement scale and could provide free-text feedback.
-The two groups were analysed separately, and developers did not rate the two statements about operational usefulness and regular use.
-Results are descriptive because of the small samples.
-Concurrent-use tests repeated the complete-input scenario under increasing load and recorded response times and HTTP outcomes.
-These request-level measures are separate from the scenario-level correctness assessment.
-
-The existing REST integration serves as a qualitative reference only.
-Its different task and interface prevent a direct comparison of response times or success rates.
-
-\section{Results and Discussion}\label{Sec:Evaluation}
-% Initial results are taken from thesis Tables 12--13, follow-up settings from Tables 14--15.
-Table~\ref{tab:comparison-results} reports the evidence used for configuration selection.
-The final Haiku settings experiment follows in Section~\ref{sec:selected-evaluation}, before the functional, robustness and user assessments of that configuration.
-\par
+% Queue the wide results table early so that it remains on the same page.
 \begin{table*}[!b]
     \caption{Configuration-selection results for T01 (complete input) and T02 (clarification required).
     LP: LLM orchestration with planner, BP: backend orchestration with planner, LN: LLM orchestration without planner.
@@ -87,7 +84,10 @@ The final Haiku settings experiment follows in Section~\ref{sec:selected-evaluat
     \textbf{C (correct outcome)} counts runs with a valid scheduling outcome and the required confirmation email.
     Each count is out of five runs. For example, 5/5/4 means five technically successful runs, five runs with correct tool use and four with correct outcomes.
     Lowercase $t$ is median cumulative response time over the technically successful runs counted by T, including those with incorrect outcomes.
-    Tokens and costs are medians over all five runs. $K_{\mathrm{rel}}$ is median model-call cost divided by the LP median for the same model and scenario.
+    Tokens and costs are medians over all five runs.
+    Token totals include regular input tokens, cached input tokens, cache-write tokens and output tokens where recorded.
+    In these experiments, cached input and cache-write tokens were recorded only for Claude Haiku 4.5.
+    $K_{\mathrm{rel}}$ is median model-call cost divided by the LP median for the same model and scenario.
     Relative costs are rounded. No results are pooled across models or scenarios.}
     \label{tab:comparison-results}
     \centering
@@ -114,6 +114,34 @@ The final Haiku settings experiment follows in Section~\ref{sec:selected-evaluat
     \end{tabular*}
 \end{table*}
 
+Each setting used six runs per scenario, again excluding the first as a cold start.
+This adds 60 runs, of which 50 were analysed, separate from the initial 108-run selection study.
+Only the selected Haiku setting underwent the subsequent functional, robustness, concurrent-use and user assessments.
+Seven functional cases check the expected response to complete requests, missing or changed information, ambiguous inputs and empty search results.
+They document case coverage rather than a repeated-run success rate.
+
+For prompt injection, each fixed test input was repeated in ten fresh sessions, giving 80 executions.
+The assessment distinguishes deviations from the expected workflow from control violations, such as skipping required confirmation, disclosing protected information or reporting a booking that did not occur.
+These are direct user-input tests, not attacks embedded in retrieved content or tool responses.
+
+Three operational users and six developers each completed two scheduling tasks using their own wording.
+One task used a relative date and a morning preference, while the other used an explicit date and an afternoon preference.
+Participants then rated 15 statements on a five-point agreement scale and could provide free-text feedback.
+The two groups were analysed separately, and developers did not rate the two statements about operational usefulness and regular use.
+Results are descriptive because of the small samples.
+Concurrent-use tests repeated the complete-input scenario under increasing load and recorded response times and HTTP outcomes.
+These request-level measures are separate from the scenario-level correctness assessment.
+
+The existing REST integration serves as a qualitative reference only.
+Its different task and interface prevent a direct comparison of response times or success rates.
+
+\section{Results and Discussion}\label{Sec:Evaluation}
+% Initial results are taken from thesis Tables 12--13, follow-up settings from Tables 14--15.
+Table~\ref{tab:comparison-results} reports the evidence used for configuration selection.
+The final Haiku settings experiment follows in Section~\ref{sec:selected-evaluation}, before the functional, robustness and user assessments of that configuration.
+\par
+
+
 \subsection{Configuration Selection Results}
 Claude Haiku 4.5 without a separate planner was the only combination with correct outcomes in all five runs of both scenarios.
 Its median response times were 13.381\,s and 17.247\,s.
@@ -135,37 +163,40 @@ Omitting it combines state updates and tool selection, rather than removing all 
 Different tasks, models and planning mechanisms prevent a direct replication claim.
 The bounded workflow may help explain the limited benefit here, but its causal effect was not isolated.
 
-% Start the settings discussion after the wide comparison table.
-\newpage
 \subsection{Haiku Settings Selection}\label{sec:selected-evaluation}
 During settings selection, all five settings produced correct outcomes in all five regular runs of each scenario.
 Technical success and correct tool use were also observed in all regular runs.
 Table~\ref{tab:haiku-settings} makes the final settings decision explicit.
+Costs use the original evaluation rates per million tokens: USD~1.10 for regular input, USD~0.11 for cached input, USD~1.375 for cache writes and USD~5.50 for output.
+These match the published Haiku 4.5 regional rates, including five-minute cache writes, checked on 1 November 2026~\cite{Anthropic2026Pricing}.
 
 \par\medskip
 \noindent\begin{minipage}{\columnwidth}
-    \captionof{table}{Separate Haiku settings experiment with individual tools and no planner. Each row includes five regular runs per scenario. All runs were technically successful, used tools correctly and produced correct outcomes. Times are median cumulative response times in seconds. Budget denotes the additional reasoning-token budget, with off indicating disabled reasoning.}
+    \captionof{table}{Results for the Haiku settings defined in Table~\ref{tab:haiku-configurations}. Each row includes five regular runs per scenario. All runs were technically successful, used tools correctly and produced correct outcomes. Time and cost are medians per complete scenario run. Costs include all recorded token categories across all model calls and are rounded to six decimal places in USD. Bold marks the selected setting.}
     \label{tab:haiku-settings}
     \centering\small
     \setlength{\tabcolsep}{3pt}
     \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrr@{}}
         \toprule
-        \textbf{Setting} & \textbf{Temp.} & \textbf{Budget} & \textbf{T01 [s]} & \textbf{T02 [s]} \\
+        & \multicolumn{2}{c}{\textbf{T01}} & \multicolumn{2}{c}{\textbf{T02}} \\
+        \cmidrule(lr){2-3}\cmidrule(lr){4-5}
+        \textbf{Setting} & \textbf{Time [s]} & \textbf{Cost [USD]} & \textbf{Time [s]} & \textbf{Cost [USD]} \\
         \midrule
-        K1 & 0 & off & 14.253 & 15.312 \\
-        K2 & 0.5 & off & 12.528 & 15.939 \\
-        K3 & 1 & off & 13.379 & 16.237 \\
-        K4 & 0 & 1\,024 & 13.294 & 16.324 \\
-        K5 & 0 & 4\,096 & 14.915 & 17.013 \\
+        K1 & 14.253 & 0.081609 & 15.312 & 0.101242 \\
+        \textbf{K2} & \textbf{12.528} & \textbf{0.081557} & \textbf{15.939} & \textbf{0.100520} \\
+        K3 & 13.379 & 0.081865 & 16.237 & 0.101124 \\
+        K4 & 13.294 & 0.082705 & 16.324 & 0.101075 \\
+        K5 & 14.915 & 0.081843 & 17.013 & 0.101329 \\
         \bottomrule
     \end{tabular*}
 \end{minipage}
 \par\medskip
 
-Haiku without a planner at temperature 0.5 and with additional reasoning disabled was selected for subsequent tests, based on its slightly lower median costs and comparatively short response times.
-K2 had the shortest median response time in T01, while K1 was fastest in T02.
-Compared with K1, the median model-call cost of K2 was lower by approximately 0.06\% in T01 and 0.71\% in T02.
-These small differences do not establish a meaningful general efficiency advantage.
+Since all five settings achieved the same observed correctness, response time and cost informed the final selection.
+K2 combined the lowest median costs in both scenarios with the shortest response time in T01, while K1 was faster in T02.
+This balance motivated the selection of K2 for subsequent tests.
+
+The cost differences are small and, with only five regular runs per setting and scenario, do not establish a meaningful general efficiency advantage.
 Neither higher temperature nor additional reasoning improved the observed correctness in these scenarios.
 This selection is specific to these observations, rather than evidence that temperature 0.5 is generally optimal.
 
@@ -232,7 +263,7 @@ P06--P08 concern information disclosure rather than completion of a scheduling t
 Repeating eight fixed inputs tests consistency for those inputs, not coverage of the wider attack space.
 The observations also do not isolate the contribution of model behaviour from application-side controls.
 
-\subsection{User Feedback and Concurrent Use}
+\subsection{User Feedback}
 Operational users rated both stepwise and combined input positively, with a median of 5 for each statement on the five-point scale.
 The median was also 5 for understandable booking and correct handling of natural-language time expressions.
 These are participant ratings, not measured task-success rates.
@@ -246,13 +277,42 @@ One operational user preferred a conventional form to a lengthy chat.
 The statement favouring direct scheduling with few inputs received a median of 5, which indicates a preference for a short interaction rather than stronger approval of conversational dialogue.
 The six developers also highlighted response time and interface improvements, but their feedback does not establish acceptance in operational work.
 
-Concurrent-use tests showed increasing response times with higher load and more failed requests at the highest tested load.
-Successful HTTP responses do not establish correct scheduling outcomes.
 During parallel use in the user evaluation, no mixing of conversation information was observed, but this was not a systematic context-isolation test.
-The combined observations support further development of a concise interaction and load-aware response handling, without establishing sustained capacity or long-term acceptance.
+These observations support further development of a concise interaction, without establishing long-term acceptance.
 
-% Keep this heading with its discussion below the robustness table.
-\newpage
+\subsection{Load Tests}\label{sec:load-tests}
+Three load profiles repeated the complete-input scenario T01 with the selected configuration.
+L01 provides the reference load, L02 uses five times as many virtual clients, and L03 applies a higher stress load.
+L01 and L02 each ran for 10 minutes and 2 seconds, while L03 ran for 48 minutes and 31 seconds.
+Table~\ref{tab:load-results} reports the mean response times and HTTP error rates from these tests.
+Absolute client counts and internal capacity requirements are omitted.
+
+\begin{table}[!htbp]
+    \caption{Load-test results for T01. Time is the reported mean response time per request. HTTP error rates count responses with status 500 or 504 among all recorded HTTP calls and are rounded to two decimal places. These are request-level measures, not rates of correct bookings.}
+    \label{tab:load-results}
+    \centering\small
+    \setlength{\tabcolsep}{3pt}
+    \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}llrr@{}}
+        \toprule
+        \textbf{Profile} & \textbf{Load} & \shortstack{\textbf{Mean time}\\\textbf{[s]}} & \shortstack{\textbf{HTTP errors}\\\textbf{[\%]}} \\
+        \midrule
+        L01 & Reference & 7.053 & 0.91 \\
+        L02 & Fivefold & 8.105 & 0.80 \\
+        L03 & Stress & 15.455 & 9.98 \\
+        \bottomrule
+    \end{tabular*}
+\end{table}
+
+At fivefold load, the HTTP error rate remained close to the reference level, while requests took longer on average.
+The small difference in error rates does not show that higher load improves reliability.
+Under the stress profile, both response time and the share of failed requests increased substantially.
+L01 and L02 contained HTTP 500 errors, while L03 also contained HTTP 504 errors.
+Successful HTTP responses do not establish correct scheduling outcomes.
+
+These mean request times cannot be compared directly with the median cumulative scenario times in Tables~\ref{tab:comparison-results} and~\ref{tab:haiku-settings}.
+The tests also used different durations and do not establish a sustainable production load.
+They show that response time and technical reliability need to be assessed together under concurrent use.
+
 \subsection{Implications for Controlled Integration}
 Bundling operations can improve efficiency, while an additional model stage does not by itself ensure correctness.
 The practical choice must therefore consider both task outcomes and resource use.

@@ -18,7 +18,7 @@ Prompts were developed using one evaluated model family, potentially favouring i
 Date processing and error handling cover selected expressions and service responses.
 Response times also depend on external services.
 Latency medians exclude technically failed runs and use different sample sizes, so faster responses must be interpreted alongside success counts.
-The limited load tests do not establish sustained production capacity.
+The load profiles used different test durations and do not establish sustained production capacity.
 
 Direct prompt-injection tests do not cover indirect attacks or establish comprehensive security.
 Ten repetitions of each fixed input assess consistency but do not provide 80 distinct attack patterns.
@@ -47,4 +47,10 @@ Together, these stages support a reasoned prototype choice and identify developm
 The main lesson is to assess outcome correctness separately from technical execution and to treat configuration selection, functional coverage and user acceptance as distinct sources of evidence.
 
 Future work should complete the comparison with backend orchestration without a planner and introduce independent scenarios, larger tool sets and more repetitions.
+
+Further work should also test whether other available LLMs can be used without major changes to the assistant.
+An initial assessment should keep prompts and tool definitions unchanged and document any model-specific adjustments needed.
+Models that support the workflow could then be compared on the same independent scenarios using outcome correctness, response time and cost.
+The comparison should include the functional and robustness checks that were performed only with Haiku in this study.
+This would show how much effort is needed to switch models and whether the selected configuration remains suitable as more models become available.
 Longer user studies, sustained load tests and targeted context-isolation and prompt-injection checks are needed before operational use.

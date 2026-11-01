@@ -4,7 +4,7 @@
 Orchestration of a scheduling assistant with a large language model (LLM) and Model Context Protocol (MCP) tools.
 Dialogue state stores information from earlier turns.
 \textbf{(a)} A separate planner updates that state and identifies the next step. The LLM selects and sequences individual tools.
-\textbf{(b)} The same planning stage precedes LLM selection of a bundled tool. The backend sequences its internal operations.
+\textbf{(b)} The same planning step runs first. The LLM then selects a bundled tool, and the backend runs its internal operations in order.
 \textbf{(c)} The LLM handles state updates and individual tool selection without a separate planner.
 Arrows show logical processing for complete inputs. Blue marks inputs and grey marks tools.
 Client and server mediate every tool execution.
