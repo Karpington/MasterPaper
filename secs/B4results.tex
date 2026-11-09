@@ -43,12 +43,13 @@ Result correctness requires a valid scheduling outcome and the confirmation emai
 Additional read-only calls do not automatically constitute an incorrect outcome, whereas repeated state-changing calls can affect correctness.
 These measures were evaluated across all five regular repetitions.
 
-Response time was measured from submission of each input to complete display of the corresponding response and summed across the scenario, excluding user reading and input time.
+For each input, response time was measured from submission until the full response was displayed.
+These times were added across the scenario, excluding the time users spent reading and entering information.
 Token usage and model-call cost were accumulated across all model calls, accounting for input, output and applicable cache-token categories.
 Reported response times are medians of technically successful regular runs, including those with incorrect outcomes.
 Token and cost medians include all five regular runs, since failed attempts also consume resources.
 In Table~\ref{tab:comparison-results}, relative cost is the ratio of median model-call costs, normalised to LLM orchestration with a planner within each model and scenario.
-The small number of repetitions supports descriptive comparison rather than broad statistical generalisation.
+The small number of repetitions allows a descriptive comparison, but does not support broad statistical conclusions.
 
 \subsection{Evaluation of the Selected Configuration}
 Selection prioritised correctness and reliability, followed by response time and cost.
@@ -160,8 +161,8 @@ The Haiku configuration without a planner was selected on observed correctness, 
 RestGPT reports higher success rates with an iterative planner informed by execution results~\cite{song2023restgpt}.
 Our planner operates once per user input, without replanning between tool calls.
 Omitting it combines state updates and tool selection, rather than removing all decision-making.
-Different tasks, models and planning mechanisms prevent a direct replication claim.
-The bounded workflow may help explain the limited benefit here, but its causal effect was not isolated.
+The tasks, models and planning mechanisms differ, so our study is not a direct replication of RestGPT.
+The limited scheduling workflow may help explain why the planner offered little benefit here, but this explanation was not tested separately.
 
 \subsection{Haiku Settings Selection}\label{sec:selected-evaluation}
 During settings selection, all five settings produced correct outcomes in all five regular runs of each scenario.
@@ -169,7 +170,6 @@ Technical success and correct tool use were also observed in all regular runs.
 Table~\ref{tab:haiku-settings} makes the final settings decision explicit.
 Costs use the original evaluation rates per million tokens: USD~1.10 for regular input, USD~0.11 for cached input, USD~1.375 for cache writes and USD~5.50 for output.
 These match the published Haiku 4.5 regional rates, including five-minute cache writes, checked on 1 November 2026~\cite{Anthropic2026Pricing}.
-
 \par\medskip
 \noindent\begin{minipage}{\columnwidth}
     \captionof{table}{Results for the Haiku settings defined in Table~\ref{tab:haiku-configurations}. Each row includes five regular runs per scenario. All runs were technically successful, used tools correctly and produced correct outcomes. Time and cost are medians per complete scenario run. Costs include all recorded token categories across all model calls and are rounded to six decimal places in USD. Bold marks the selected setting.}
@@ -196,7 +196,8 @@ Since all five settings achieved the same observed correctness, response time an
 K2 combined the lowest median costs in both scenarios with the shortest response time in T01, while K1 was faster in T02.
 This balance motivated the selection of K2 for subsequent tests.
 
-The cost differences are small and, with only five regular runs per setting and scenario, do not establish a meaningful general efficiency advantage.
+The cost differences are small.
+With only five regular runs per setting and scenario, they do not establish a meaningful efficiency advantage beyond these tests.
 Neither higher temperature nor additional reasoning improved the observed correctness in these scenarios.
 This selection is specific to these observations, rather than evidence that temperature 0.5 is generally optimal.
 
@@ -261,7 +262,7 @@ Table~\ref{tab:injection-results} separates that finding from disruptions of the
 The three interrupted sequences in P02 and two deviations in P05 show that manipulative input can affect task execution without bypassing the assessed controls.
 P06--P08 concern information disclosure rather than completion of a scheduling task, so their results are not combined into an overall task-success rate.
 Repeating eight fixed inputs tests consistency for those inputs, not coverage of the wider attack space.
-The observations also do not isolate the contribution of model behaviour from application-side controls.
+The tests also do not show how much protection came from the model and how much came from application-side controls.
 
 \subsection{User Feedback}
 Operational users rated both stepwise and combined input positively, with a median of 5 for each statement on the five-point scale.
@@ -270,7 +271,7 @@ These are participant ratings, not measured task-success rates.
 Response clarity and appropriate response times each received a median of 4.
 Perceived support in daily work and willingness to use the assistant regularly each had a median of 4 and a mean of 3.67.
 All these items had three responses.
-The selected items distinguish perceived ease of use from operational acceptance, which was less uniformly positive.
+These ratings suggest that users found the assistant easy to use, but were less consistently positive about using it in daily work.
 
 Free-text feedback requested shorter responses, concise questions and more visible appointment options.
 One operational user preferred a conventional form to a lengthy chat.
@@ -319,6 +320,6 @@ The practical choice must therefore consider both task outcomes and resource use
 Three lessons follow from the case study.
 First, separate technical execution, tool behaviour and outcome correctness because these can disagree even within the same run.
 Second, distinguish configuration selection from later case coverage and user feedback, since these stages answer different questions.
-Third, make empty results and failures unambiguous at the tool boundary and keep confirmation and validation outside the model's discretion.
+Third, tools should clearly distinguish empty results from failures, and the application must enforce confirmation and validation.
 Compared with a fixed REST-based interface, conversational input adds flexibility but also requires explicit state management, validation and unambiguous tool results.
 No quantitative advantage over that interface was tested.

@@ -23,7 +23,8 @@ The reported benefit applies to the evaluated benchmark and architecture, so its
 This approach connects multiple model calls so that each step can use earlier outputs.
 An interactive interface exposes intermediate results and allows users to modify individual steps.
 A study with 20 participants found improved task outcomes and perceived transparency, controllability and collaboration compared with a non-chaining interface~\cite{wu2022aichains}.
-For our design, this motivates explicit intermediate state and opportunities for correction, while leaving the allocation of tool orchestration to be investigated.
+For our design, this supports storing intermediate state and allowing corrections.
+How to divide tool orchestration between the LLM and backend remains an open question.
 
 \textbf{Guidelines for Human-AI Interaction.}
 This work presents 18 design guidelines evaluated through several rounds, including a study with 49 practitioners examining 20 AI-enabled products.

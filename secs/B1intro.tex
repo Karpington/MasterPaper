@@ -19,9 +19,12 @@ It stores relevant information from the conversation in a structured form.
 Users must explicitly confirm an appointment before it is booked.
 The selection stage compares LLM orchestration with a planner, backend orchestration with a planner, and LLM orchestration without a separate planner (Figure~\ref{fig:paper-orchestration}).
 
-The contribution is an empirical case study of controlled tool use in a bounded scheduling workflow.
-It connects three aspects: a generalised design that separates model decisions from application controls, a configuration-selection study that distinguishes execution success from outcome correctness, and a subsequent assessment of the selected system through functional cases, direct prompt injection and user feedback.
+This paper contributes an empirical case study of controlled tool use in a clearly defined scheduling workflow.
+It connects three aspects.
+First, the system design separates model decisions from application controls.
+Second, the configuration-selection study distinguishes successful execution from correct outcomes.
+Third, the selected system is assessed through functional cases, direct prompt-injection tests and user feedback.
 The selection also considers response time, token usage and model-call cost.
 Together, these results show where efficient tool execution can still fail to meet the task goal and where a working prototype needs further interaction and integration improvements.
-MCP is the shared integration layer, so the study evaluates orchestration choices rather than an intrinsic advantage of the protocol.
+All variants use MCP, so the study evaluates orchestration choices rather than whether the protocol itself provides an advantage.
 The following sections present the background and requirements, system design, evaluation, and implications for comparable applications.
