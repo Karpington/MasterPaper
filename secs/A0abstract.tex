@@ -1,15 +1,8 @@
-Integrating large language models (LLMs) with existing software requires more than selecting suitable tools.
-The application must coordinate actions, maintain dialogue context and keep operations such as booking under human control.
-This paper presents the design, configuration selection and evaluation of an MCP-based conversational scheduling assistant.
-The prototype makes existing services available through the Model Context Protocol (MCP).
-It combines structured dialogue state, server-side validation and explicit user confirmation before booking.
-A selection study compares three models and three orchestration variants on two scenarios, with 90 analysed runs after excluding cold starts.
-Claude Haiku 4.5 with individual tools and no separate planner produced correct outcomes in all five repetitions of each scenario and was selected for further evaluation.
-The comparison shows that technically successful tool calls can still produce incorrect outcomes.
-A separate settings experiment adds 50 analysed runs.
-Only the selected Haiku configuration was then evaluated using seven functional cases, eight direct prompt-injection inputs repeated 80 times in total, and concurrent-use tests.
-Three operational users and six developers also provided exploratory feedback.
-The functional cases met expectations after an error-handling adjustment for empty search results.
-No control violation was observed in the injection tests, although some inputs disrupted the expected workflow.
-Users valued flexible input but wanted shorter responses and less waiting time.
-The results support configuration selection for this task, but do not establish an independent model ranking or readiness for production use.
+Large language models can use software tools, but successful tool calls do not necessarily produce a correct task outcome.
+This paper compares three orchestration variants for an MCP-based conversational scheduling assistant: individual tools with a planner, bundled backend tools with a planner, and individual tools without a separate planner.
+The configuration-selection study evaluates three models on two scenarios, separating technical execution, correct tool use and outcome correctness while also measuring response time and model-call cost.
+In the tested scenarios, Claude Haiku 4.5 without a separate planner produced correct outcomes in all regular runs.
+Backend orchestration reduced time and cost for this model but produced fewer correct outcomes.
+The main contribution is a case study showing why orchestration choices must be assessed through complete task outcomes alongside execution efficiency.
+Shared application-side validation and explicit user confirmation constrain all variants.
+The small, task-specific comparison supports prototype selection, not an independent model ranking or proof of production readiness.

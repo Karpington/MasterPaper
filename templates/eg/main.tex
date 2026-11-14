@@ -22,16 +22,21 @@
 \usepackage[pdftex]{graphicx}
 \usepackage{egweblnk} 
 \input{common/packages.tex}
+% Use a consistent, compact caption style for the numerical and case tables.
+\captionsetup[table]{font=small,skip=6pt}
 \input{common/commands.tex}
+% Keep the final reference on the last text page after reflowing the figures.
+\let\paperbibliography\thebibliography
+\renewcommand{\thebibliography}[1]{\paperbibliography{#1}\setlength{\itemsep}{1pt}}
 \graphicspath{{./}, {../figs}, {./download/egPublStyle-cgf/}} 
 \ifthenelse{\equal{\BlindSubmission}{1}}
 {
-    \author[Anonymous]{\parbox{\textwidth}{\centering Anonymous Author}}
+    \author[Anonymous]{\parbox{\dimexpr\textwidth-2pt\relax}{\centering Anonymous Author}}
 }
 {
     \author[Daniel Becker]{%
-      \parbox{\textwidth}{\centering Daniel Becker$^{1,2}$}\\
-      \parbox{\textwidth}{\centering
+      \parbox{\dimexpr\textwidth-2pt\relax}{\centering Daniel Becker$^{1,2}$}\\
+      \parbox{\dimexpr\textwidth-2pt\relax}{\centering
         $^1$Coburg University of Applied Sciences and Arts, Germany\\
         $^2$HUK-COBURG, Germany}
     }
@@ -41,13 +46,18 @@
 \input{lists/acronyms.tex}
 
 \title[MCP-Based Scheduling Orchestration]{Orchestrating MCP-Based Scheduling Assistants:\\Comparing LLM and Backend Control}
-% Reduce unused space below the affiliations to accommodate the taller teaser.
+% Keep the title block compact above the abstract.
 \setlength{\titlespace}{-25pt}
-\begin{document}
-\teaser
-{
-    \input{./secs/A0teaser.tex}
+
+% Reserve space for related headings and content at column boundaries.
+\newcommand{\paperneedspace}[1]{%
+  \par\begingroup
+  \dimen0=\pagegoal
+  \advance\dimen0 by -\pagetotal
+  \ifdim\dimen0<#1\relax\newpage\fi
+  \endgroup
 }
+\begin{document}
 \maketitle
 \hypersetup{
   pdftitle={Orchestrating MCP-Based Scheduling Assistants: Comparing LLM and Backend Control},
@@ -57,11 +67,14 @@
 \begin{abstract}
 \input{secs/A0abstract.tex}
 \end{abstract}
-% The explanatory orchestration teaser and full abstract fill the opening page.
-% Restart the two-column body on the next page, beginning with the left column.
-\twocolumn
+% Continue the introduction below the abstract on the opening page.
+\setlength{\textfloatsep}{12pt plus 2pt minus 2pt}
+\setlength{\dbltextfloatsep}{12pt plus 2pt minus 2pt}
+\setlength{\intextsep}{10pt plus 2pt minus 2pt}
 \clubpenalty=10000
 \widowpenalty=10000
+% Keep paragraph spacing natural when an anchored table moves to the next column.
+\raggedbottom
 \input{secs/structure.tex}
 \bibliographystyle{./download/egPublStyle-cgf/eg-alpha-doi}
 \bibliography{common/bibliography}

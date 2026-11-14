@@ -1,7 +1,13 @@
-% Main manuscript. Abstract and teaser are included by the selected template.
-% A0abstract.tex is \input'ed in template/main.tex.
-% A0teaser.tex is \input'ed in template/main.tex.
+% Main manuscript. The template includes the abstract.
+% Queue the architecture here; the variants figure is included in B3main.tex.
 \input{./secs/B1intro.tex}
+% Queue the wide architecture for the page where Section 4 begins.
+\begin{figure*}[!b]
+    \centering
+    \resizebox{\textwidth}{!}{\input{figs/paper_architecture.tex}}
+    \caption{Shared MCP architecture. The dialogue client manages state and model calls; the server validates tool requests and accesses existing services. Arrows show requests and responses. The model has no direct service access. Internal deployment details are omitted.}
+    \label{fig:paper-architecture}
+\end{figure*}
 \input{./secs/B2background.tex}
 \input{./secs/B3main.tex}
 \input{./secs/B4results.tex}

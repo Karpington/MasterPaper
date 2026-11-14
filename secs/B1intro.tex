@@ -8,23 +8,28 @@ In a conversational scheduling assistant, this capability must support a sequenc
 A plausible response alone is insufficient.
 The application must also retain dialogue context, validate inputs and keep the final booking decision under human control.
 
+Research on tool-using LLMs addresses both the use of individual APIs and the coordination of several steps.
+ToolLLM studies model training and evaluation for single-tool and multi-tool tasks~\cite{qin2024toolllm}.
+ReAct combines reasoning with actions so that observations can inform later decisions~\cite{yao2023react}.
+RestGPT separates planning, API selection and execution to handle requests involving RESTful APIs~\cite{song2023restgpt}.
+These approaches motivate studying how tool calls are coordinated, alongside whether they execute successfully.
+For a scheduling application, the comparison must also consider whether the complete process produces the intended outcome and how much time and cost it requires.
+
 The Model Context Protocol (MCP) provides a common interface through which applications can access tools exposed by servers~\cite{MCP2025Architecture}.
 For the scheduling task considered here, a further design decision concerns orchestration: which component selects and sequences the required operations?
 The LLM can coordinate individual tools, or a backend tool can bundle several operations into a predefined sequence.
 A separate planning stage introduces another design choice whose value must be assessed alongside its additional processing effort.
 
-This paper investigates the following question: \textit{How can an MCP-based scheduling assistant be designed for human control, and how can its model and orchestration configuration be selected and evaluated?}
+This paper investigates the following question: \textit{How do three MCP-based orchestration variants compare in outcome correctness, response time and model-call cost in a conversational scheduling workflow?}
 We examine a prototype that lets users access existing services through a chat interface.
 It stores relevant information from the conversation in a structured form.
 Users must explicitly confirm an appointment before it is booked.
 The selection stage compares LLM orchestration with a planner, backend orchestration with a planner, and LLM orchestration without a separate planner (Figure~\ref{fig:paper-orchestration}).
+Each variant is tested with three models on two scheduling scenarios as part of configuration selection.
 
-This paper contributes an empirical case study of controlled tool use in a clearly defined scheduling workflow.
-It connects three aspects.
-First, the system design separates model decisions from application controls.
-Second, the configuration-selection study distinguishes successful execution from correct outcomes.
-Third, the selected system is assessed through functional cases, direct prompt-injection tests and user feedback.
-The selection also considers response time, token usage and model-call cost.
-Together, these results show where efficient tool execution can still fail to meet the task goal and where a working prototype needs further interaction and integration improvements.
+The main contribution is an empirical comparison of these three orchestration variants in a clearly defined scheduling workflow.
+It distinguishes technical execution, correct tool use and outcome correctness, and considers response time and model-call cost alongside these measures.
+The central finding is that technically successful tool execution does not necessarily produce a correct scheduling outcome.
+The shared architecture provides the basis for this comparison; the later settings, functional, robustness, user and load assessments provide supporting evidence about the selected prototype.
 All variants use MCP, so the study evaluates orchestration choices rather than whether the protocol itself provides an advantage.
 The following sections present the background and requirements, system design, evaluation, and implications for comparable applications.

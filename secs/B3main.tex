@@ -1,42 +1,20 @@
 \section{Use Case and Requirements}\label{sec:requirements}
 % Derived from thesis chapter 3, especially the use case and requirements.
 % Company-specific appointment types, identifiers and access mechanisms are omitted.
-The use case concerns an authorised staff member arranging an appointment during a customer interaction.
-The customer is already identified within the existing process and has expressed an interest in an appointment.
-The assistant supports scheduling through natural-language input.
-This work does not cover direct customer access, professional advice or changes to confirmed bookings.
+An authorised staff member uses the assistant to arrange an appointment during a customer interaction.
+The customer is already identified and interested in an appointment.
+The staff member enters time and location preferences, clarifies missing information and reviews available options with the customer.
+Preferences can be revised and the process cancelled before booking.
+Selecting a returned option confirms booking after the customer's agreement; no additional confirmation turn is required.
+The application validates the request and reports success only after service confirmation.
+A confirmation email can follow if a valid address is available.
+Direct customer access, professional advice and changes to confirmed bookings are outside scope.
 
-Figure~\ref{fig:paper-use-case} summarises the workflow.
-The staff member enters the appointment request and relevant time and location preferences.
-Missing or ambiguous information is clarified before dependent operations proceed.
-Available options are retrieved and reviewed with the customer.
-If no suitable option is found or preferences change, the request can be revised.
-Booking requires the customer's agreement and an explicit confirmation by the staff member.
-Selecting a returned option constitutes this confirmation, rather than an additional dialogue turn.
-The application then validates and executes the request and reports its outcome.
-A confirmation email can follow a successful booking if a valid address is available.
-
-\begin{figure}[!htb]
-    \centering
-    \resizebox{\columnwidth}{!}{\input{figs/paper_use_case.tex}}
-    \caption{Generalised scheduling workflow for a staff-operated conversational assistant.
-    Arrows show the order of actions, while the return paths allow revised preferences and a new search.
-    Blue boxes mark staff input or review. Selecting an option in the bold box confirms the booking after agreement with the customer.
-    Grey boxes mark application operations.
-    Booking remains subject to validation.
-    Cancellation and failure handling apply throughout but are omitted from the diagram.}
-    \label{fig:paper-use-case}
-\end{figure}
-
-The requirements cover context handling, controlled execution and clear feedback.
-Information must persist across dialogue turns and remain correctable before booking.
-Changes must invalidate dependent information, such as outdated appointment options.
-Access must remain restricted to authorised users and permitted records, and model input must be limited to information needed for the task.
+Dialogue information must persist across turns and remain correctable; changes must invalidate dependent results.
+Access is restricted to authorised users and permitted records, and model input is limited to task-relevant information.
 Tool parameters and booking conditions require application-side checks.
-Unavailable appointments must be distinguished from technical failures, and a booking must only be reported as successful after the service confirms it.
-The staff member must be able to cancel before booking.
-Responses should be concise, and processing delays should support use during an ongoing conversation.
-\FloatBarrier
+Empty search results must be distinguished from technical failures.
+Responses and delays should support an ongoing customer conversation.
 
 \section{System Design and Orchestration Variants}\label{Sec:MainPart}
 This section describes the shared architecture and dialogue state before introducing the three orchestration variants.
@@ -51,38 +29,22 @@ The application executes model-selected tool calls through this connection.
 The language model has no direct access to the underlying services.
 
 The dialogue client maintains structured state containing known preferences, missing information and the current processing step.
-Each new input is interpreted together with this state, producing a response and an updated state for the next turn (Figure~\ref{fig:paper-dialogue-state}).
+Each new input is interpreted together with this state, producing a response and an updated state for the next turn.
 The server separately retains intermediate service results needed by subsequent operations.
 This separation allows reusable results to remain available without placing all service data in the model context.
 Corrections update the relevant state and invalidate dependent results before processing continues.
 
-\begin{figure*}[t]
-    \centering
-    \resizebox{\textwidth}{!}{\input{figs/paper_architecture.tex}}
-    \caption{Generalised architecture of a scheduling assistant using the Model Context Protocol (MCP).
-    The user interacts with a dialogue client that maintains state and asks a language model to interpret inputs.
-    The client invokes tools on the MCP server, which validates requests and accesses existing scheduling and data services through their application programming interfaces (APIs).
-    Double-headed arrows represent requests and responses, not unrestricted model access to services.
-    Internal system names and deployment details are omitted.}
-    \label{fig:paper-architecture}
-\end{figure*}
 
-% Keep the dialogue-state diagram beside its explanation instead of queuing it
-% behind the full-width architecture figure.
-\par\medskip
-\noindent\begin{minipage}{\columnwidth}
-    \centering
-    \resizebox{\columnwidth}{!}{\input{figs/paper_dialogue_state.tex}}
-    \captionof{figure}{State handling across successive dialogue turns.
-    The processing stage combines the current user input with information retained from previous turns, following the selected orchestration variant.
-    It produces a response for the user and an updated dialogue state.
-    The right-hand feedback arrow carries that state into the next turn, so previously established information can be reused.}
-    \label{fig:paper-dialogue-state}
-\end{minipage}
-\par\medskip
 
-\subsection{Orchestration Variants}
-The three variants in Figure~\ref{fig:paper-orchestration} share this architecture but differ in tool granularity and the use of a separate planning stage.
+\begin{strip}
+    \begin{minipage}{\textwidth}
+    \subsection{Orchestration Variants}
+    The three variants in Figure~\ref{fig:paper-orchestration} share this architecture but differ in tool granularity and the use of a separate planning stage.
+    \par\medskip
+    \captionsetup{type=figure}
+    \input{secs/A0teaser.tex}
+    \end{minipage}
+\end{strip}
 
 \textbf{LLM orchestration with a planner.}
 Each new user input first triggers a model call that updates dialogue state and identifies the next task step.

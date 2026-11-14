@@ -1,58 +1,35 @@
 \section{Limitations and Transferability}\label{sec:limitations}
 % Derived from thesis chapter 7. Internal infrastructure and capacity details are omitted.
-The findings are specific to the tested workflow and configurations, with limited evidence about causes or other settings.
+The findings apply to the tested workflow and configurations.
+More tools, overlapping functions or longer dependencies may benefit from separate planning.
+The missing backend-without-planner variant prevents a complete comparison, and bundling changes tool granularity as well as execution location.
 
-\subsection{Scope of the Comparison}
-The prototype uses few scheduling tools with distinct functions.
-Separate planning may be useful with more tools, overlapping functions or longer sequences of dependent steps.
-The missing backend-without-planner variant prevents a complete comparison of both design choices.
-Backend orchestration also bundles operations, so the comparison changes more than where steps are coordinated.
+Three model versions were compared on two scenarios with five regular repetitions: one run changes a success rate by 20 percentage points.
+These results support descriptive comparison, not reliable estimates for wider use.
+T01 and T02 informed both selection and settings decisions and are not independent validation.
+Later assessments cover Haiku only; prompts developed with one evaluated model family may also favour it despite shared prompts and tools within each variant.
 
-The selection stage compared three model versions on two standardised scenarios.
-With five regular repetitions, one run changes a success rate by 20 percentage points.
-Five successful runs are not enough to reliably estimate the success rate in wider use.
-T01 and T02 supported selection and settings decisions, so their results are not independent confirmation of the selected configuration's performance.
-Later functional and robustness tests covered more cases for Haiku only, so they cannot establish an advantage over other models.
-Prompt development used one evaluated model family and may have favoured it, despite shared prompts and tools within each variant.
+Response times depend on external services; medians exclude technical failures and therefore use different sample sizes.
+Date handling covers selected expressions, and differing load-test durations limit conclusions about sustained capacity.
+Repeated fixed injection inputs do not cover indirect attacks or establish comprehensive security, and the tests do not isolate model protection from application controls.
+Functional cases provide coverage rather than repeated-run success rates; E07 also includes an implementation fix.
+Parallel use does not verify context isolation, and brief feedback from three users and six developers cannot establish long-term operational acceptance.
 
-\subsection{Technical and Evaluation Limits}
-Date processing and error handling cover selected expressions and service responses.
-Response times also depend on external services.
-Median response times exclude technically failed runs and are based on different numbers of runs.
-Faster responses must therefore be considered alongside success counts.
-The load profiles used different test durations and do not establish sustained production capacity.
-
-Direct prompt-injection tests do not cover indirect attacks or establish comprehensive security.
-Ten repetitions of each fixed input assess consistency but do not provide 80 distinct attack patterns.
-The functional cases are reported as coverage checks, without repetition counts from which to estimate a success rate.
-One case required a change to the implementation, so the assessment also helped improve the system rather than only testing a fixed version.
-Concurrent use does not verify context isolation.
-Brief feedback from three operational users cannot establish long-term acceptance, and six developers cannot substitute for operational experience.
-Summary results without prompts or individual run logs make independent replication harder.
-Generalised cases, settings and evaluation criteria allow readers to assess the study design.
-Internal identifiers, deployment details, access mechanisms and operational capacity figures are omitted.
-
-\subsection{Transferability}
-Explicit tool boundaries, structured state, deterministic validation, clear results and human confirmation provide design principles for other processes.
-Their suitability and the choice of orchestration require task-specific evaluation.
+Omitting prompts, run-level logs and internal deployment details limits replication, though generalised cases, settings and criteria make the design inspectable.
+Structured state, clear tool boundaries, validation and human confirmation may transfer to other processes, but require task-specific evaluation.
 
 \section{Conclusion and Future Work}\label{Sec:ConclusionAndFutureWork}
 % Derived from thesis chapter 8. No additional results are introduced.
-This paper presented the design, selection and evaluation of an MCP-based scheduling assistant under human control.
-The prototype combines flexible language input with structured dialogue state, bounded tools and application-side validation.
-Explicit confirmation keeps the booking decision with the user.
+This paper compared three MCP-based orchestration variants in a conversational scheduling workflow.
+For the tested scenarios, Haiku with individual tools and no separate planner combined correct outcomes in all regular runs with shorter response times than its planner-based counterpart.
+Backend orchestration was faster and cheaper for Haiku, but produced fewer correct outcomes.
+The comparison therefore supports assessing outcome correctness separately from successful tool execution and alongside time and cost.
+It does not establish an architecture that is best for every task.
 
-Haiku with individual tools and no separate planner was selected after five correct outcomes per selection scenario.
-The subsequent assessment covered seven functional cases, including one that required clearer handling of empty search results.
-The 80 direct prompt-injection executions produced no observed control violation, but some disrupted the intended workflow.
-Feedback from three operational users indicated that flexible input was useful while concise responses and low delays remained important.
-These results support the prototype choice and identify improvements, but do not establish the best architecture for every task.
-The main lesson is to assess correct outcomes separately from successful technical execution.
-Configuration selection, functional coverage and user acceptance each provide different evidence.
+Additional assessments identified integration and usability improvements for the selected prototype, without establishing comprehensive security, long-term acceptance or production readiness.
 
 Future work should complete the comparison with backend orchestration without a planner and introduce independent scenarios, larger tool sets and more repetitions.
 
-Other LLMs should also be tested with unchanged prompts and tool definitions, documenting any adjustments needed.
-Suitable models could then be compared on independent scenarios using outcome correctness, response time and cost, including the functional and robustness checks performed only with Haiku here.
-This would assess the effort needed to switch models and whether the selected configuration remains suitable as new models become available.
+Other LLMs should be tested with the same prompts, tool definitions and independent scenarios, documenting any adjustments needed.
+Functional and robustness checks should cover these alternatives as well as Haiku.
 Longer user studies, sustained load tests and targeted context-isolation and prompt-injection checks are needed before operational use.
