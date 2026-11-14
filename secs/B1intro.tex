@@ -18,18 +18,21 @@ For a scheduling application, the comparison must also consider whether the comp
 The Model Context Protocol (MCP) provides a common interface through which applications can access tools exposed by servers~\cite{MCP2025Architecture}.
 For the scheduling task considered here, a further design decision concerns orchestration: which component selects and sequences the required operations?
 The LLM can coordinate individual tools, or a backend tool can bundle several operations into a predefined sequence.
-A separate planning stage introduces another design choice whose value must be assessed alongside its additional processing effort.
+A separate planning stage adds processing effort.
+Its benefits therefore need to be evaluated.
 
 This paper investigates the following question: \textit{How do three MCP-based orchestration variants compare in outcome correctness, response time and model-call cost in a conversational scheduling workflow?}
 We examine a prototype that lets users access existing services through a chat interface.
 It stores relevant information from the conversation in a structured form.
 Users must explicitly confirm an appointment before it is booked.
-The selection stage compares LLM orchestration with a planner, backend orchestration with a planner, and LLM orchestration without a separate planner (Figure~\ref{fig:paper-orchestration}).
+Figure~\ref{fig:paper-orchestration} shows the three variants compared during selection: LLM orchestration with a planner, backend orchestration with a planner, and LLM orchestration without a separate planner.
 Each variant is tested with three models on two scheduling scenarios as part of configuration selection.
 
 The main contribution is an empirical comparison of these three orchestration variants in a clearly defined scheduling workflow.
-It distinguishes technical execution, correct tool use and outcome correctness, and considers response time and model-call cost alongside these measures.
+It assesses technical success, correct tool use and outcome correctness separately.
+It also considers response time and model-call cost.
 The central finding is that technically successful tool execution does not necessarily produce a correct scheduling outcome.
-The shared architecture provides the basis for this comparison; the later settings, functional, robustness, user and load assessments provide supporting evidence about the selected prototype.
+All variants share the same basic architecture.
+Further tests of settings, functionality, robustness, usability and load provide supporting evidence about the selected prototype.
 All variants use MCP, so the study evaluates orchestration choices rather than whether the protocol itself provides an advantage.
 The following sections present the background and requirements, system design, evaluation, and implications for comparable applications.

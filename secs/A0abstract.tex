@@ -1,8 +1,9 @@
-Large language models can use software tools, but successful tool calls do not necessarily produce a correct task outcome.
-This paper compares three orchestration variants for an MCP-based conversational scheduling assistant: individual tools with a planner, bundled backend tools with a planner, and individual tools without a separate planner.
-The configuration-selection study evaluates three models on two scenarios, separating technical execution, correct tool use and outcome correctness while also measuring response time and model-call cost.
-In the tested scenarios, Claude Haiku 4.5 without a separate planner produced correct outcomes in all regular runs.
-Backend orchestration reduced time and cost for this model but produced fewer correct outcomes.
-The main contribution is a case study showing why orchestration choices must be assessed through complete task outcomes alongside execution efficiency.
-Shared application-side validation and explicit user confirmation constrain all variants.
-The small, task-specific comparison supports prototype selection, not an independent model ranking or proof of production readiness.
+Large language models can use software tools, but successful calls do not necessarily produce a correct task outcome.
+This paper compares three orchestration variants for a scheduling assistant based on the Model Context Protocol (MCP): individual tools with a planner, bundled backend tools with a planner, and individual tools without a separate planner.
+We tested three models on two scenarios and assessed technical success, correct tool use and outcome correctness separately.
+We also measured response time and model-call cost.
+Claude Haiku 4.5 without a separate planner produced correct outcomes in all regular runs.
+Backend orchestration was faster and cheaper for this model, but produced fewer correct outcomes.
+The main contribution is an empirical comparison showing why correct outcomes must be assessed alongside time and cost.
+All variants use application-side validation and require user confirmation before booking.
+The findings support prototype selection for this task, but do not establish an independent model ranking or production readiness.

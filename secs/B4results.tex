@@ -2,7 +2,8 @@
 % Derived from thesis section 6.2.1 and the supplementary evaluation procedures.
 % Study counts describe the experimental design, not operational business volumes.
 % Internal endpoints and prompts are omitted. Haiku costs use published token prices.
-The study separates configuration selection from evaluation of the selected prototype; additional development checks are excluded from standardised run counts.
+The study separates configuration selection from evaluation of the selected prototype.
+Additional development checks are excluded from standardised run counts.
 
 \subsection{Configuration Selection}
 Three tool-capable models were tested with each variant: Claude Haiku 4.5 and Qwen3-235B-A22B-2507 at temperature 0, and Amazon Nova Pro at 0.00001.
@@ -18,10 +19,12 @@ The remaining five repetitions per combination yielded 90 regular runs for analy
 Backend orchestration without a planner was not tested.
 
 \subsection{Selection Criteria and Measures}
-Technical success, tool behaviour and result correctness were assessed separately.
-Technical success requires the intended tool calls to complete successfully.
-Correct tool behaviour requires the necessary calls without missing, erroneous or unnecessarily repeated invocations.
-Result correctness requires a valid scheduling outcome and the confirmation email specified in the test scenario.
+Three measures were assessed separately.
+Technical success requires the intended tool calls to complete without a technical error.
+Correct tool use concerns the required tools and call sequence, without omitted tools, incorrect tool selection or unnecessary repetitions.
+% Author clarification, 14 November 2026: parameter errors were scored under C only.
+Whether parameter values matched the request was assessed under outcome correctness, not correct tool use.
+Outcome correctness requires a valid scheduling outcome and the confirmation email specified in the test scenario.
 Additional read-only calls do not automatically constitute an incorrect outcome, whereas repeated state-changing calls can affect correctness.
 These measures were evaluated across all five regular repetitions.
 
@@ -35,13 +38,16 @@ The small number of repetitions allows a descriptive comparison, but does not su
 
 \subsection{Evaluation of the Selected Configuration}
 Selection prioritised correctness and reliability, followed by response time and cost.
-Five Haiku settings used individual tools without a planner: K1--K3 used temperatures 0, 0.5 and 1 with additional reasoning disabled; K4 and K5 used temperature 0 with reasoning budgets of 1\,024 and 4\,096 tokens.
-K2 was selected for subsequent assessments (Section~\ref{sec:selected-evaluation}).
+Five Haiku settings used individual tools without a planner.
+K1--K3 used temperatures 0, 0.5 and 1 with additional reasoning disabled.
+K4 and K5 used temperature 0 with reasoning budgets of 1\,024 and 4\,096 tokens.
+K2 was selected for subsequent assessments, as discussed in Section~\ref{sec:selected-evaluation}.
 
 % Queue the wide results table early so that it remains on the same page.
 \begin{table*}[!b]
-    \caption{Configuration-selection results. LP: individual tools with planner; BP: bundled backend tools with planner; LN: individual tools without planner.
-T/U/C count technical success, correct tool use and correct outcomes, each out of five runs (Section~\ref{sec:methodology}).
+    \caption{Configuration-selection results. LP: individual tools with planner. BP: bundled backend tools with planner. LN: individual tools without planner.
+T/U/C count technical success, correct tool use and outcome correctness out of five runs, as defined in Section~\ref{sec:methodology}.
+Parameter values are assessed under C, not U.
 $t$ is median cumulative response time for technically successful runs, including incorrect outcomes.
 Tokens and costs are medians over all five runs.
 $K_{\mathrm{rel}}$ normalises cost to LP within each model and scenario.}
@@ -81,7 +87,8 @@ These are direct user-input tests, not attacks embedded in retrieved content or 
 
 Three operational users and six developers each completed two tasks in their own wording: one with a relative date and morning preference, the other with an explicit date and afternoon preference.
 They rated 15 statements on a five-point agreement scale and could add comments.
-Groups were analysed separately; developers omitted the two items on operational usefulness and regular use.
+Groups were analysed separately.
+Developers omitted the two items on operational usefulness and regular use.
 Concurrent-use tests repeated T01 under increasing load, measuring response times and HTTP outcomes separately from scheduling correctness.
 
 The existing REST integration serves as a qualitative reference only.
@@ -95,7 +102,12 @@ This section first compares the three orchestration variants, then presents the 
 Table~\ref{tab:comparison-results} reports the configuration-selection results.
 The main finding is that technically successful tool execution does not necessarily produce a correct scheduling outcome.
 In T01, all five backend runs with Claude Haiku 4.5 were technically successful and used the tools correctly, yet only one met the outcome criterion.
-This gap shows why response time and cost must be considered together with outcome correctness.
+
+% Date mismatch confirmed by the author on 14 November 2026; no model/run attribution or causal diagnosis added.
+An observed date error illustrates the difference between technical success and outcome correctness.
+A tool received a date that did not match the requested date.
+The call completed without a technical error, but its result did not meet the request.
+Successful execution therefore does not show that the supplied values were correct.
 
 Claude Haiku 4.5 without a separate planner was the only combination with correct outcomes in all five runs of both scenarios.
 Its median response times were 13.381\,s and 17.247\,s.
@@ -105,8 +117,9 @@ The planner effect varied by model and metric.
 For Qwen3 in T01, adding a planner increased technical success from two to four runs but left correct outcomes at two.
 Without a planner, Qwen3 reached five correct outcomes in T02 but only two in T01.
 Backend orchestration had the lowest median cost in every model--scenario combination: 0.33--0.69 times the LLM-with-planner baseline.
-Input processing dominated token use; only Haiku recorded cache usage, so token totals alone do not determine cost.
-Correction effort is excluded.
+Input processing dominated token use.
+Only Haiku recorded cache usage, so token totals alone do not determine cost.
+These costs exclude the effort needed to correct wrong results.
 
 The Haiku configuration without a planner was selected on observed correctness, despite higher costs than backend orchestration.
 RestGPT reports higher success rates with an iterative planner informed by execution results~\cite{song2023restgpt}.
@@ -116,7 +129,7 @@ The tasks, models and planning mechanisms differ, so our study is not a direct r
 The limited scheduling workflow may help explain why the planner offered little benefit here, but this explanation was not tested separately.
 
 \subsection{Haiku Settings Selection}\label{sec:selected-evaluation}
-All five settings achieved technical success, correct tool use and correct outcomes in all regular runs (Table~\ref{tab:haiku-settings}).
+As shown in Table~\ref{tab:haiku-settings}, all five settings met the criteria for technical success, correct tool use and outcome correctness in all regular runs.
 Costs use the evaluation rates per million tokens: USD~1.10 input, USD~0.11 cached input, USD~1.375 cache writes and USD~5.50 output, matching Haiku 4.5 regional rates with five-minute cache writes checked on 1 November 2026~\cite{Anthropic2026Pricing}.
 
 \par\medskip
@@ -142,50 +155,57 @@ Costs use the evaluation rates per million tokens: USD~1.10 input, USD~0.11 cach
 \end{minipage}
 \par\medskip
 
-With equal observed correctness, K2 was selected for the lowest median costs in both scenarios and shortest time in T01; K1 was faster in T02.
-The small cost differences and five runs per setting and scenario do not establish a general efficiency advantage.
-Higher temperature and additional reasoning did not improve observed correctness; temperature 0.5 is not shown to be generally optimal.
+All settings produced correct outcomes.
+K2 had the lowest median costs in both scenarios and the shortest time in T01, while K1 was faster in T02.
+This motivated the selection of K2.
+The small cost differences and five runs per setting and scenario do not establish a general advantage for temperature 0.5.
 
 \subsection{Functional Cases}
-The seven cases assessed K2 only and document coverage, not repeated-run success rates.
+The seven cases tested K2 only.
+They show which situations were checked, but do not provide success rates across repeated runs.
 E01 completed the intended scheduling process.
 Missing customer identifiers (E02) and appointment purposes (E03) triggered questions before proceeding.
-A changed day (E04) triggered a new availability search while retaining customer information; a revised customer identifier (E05) was used for booking.
+A changed day (E04) triggered a new availability search while retaining customer information.
+A revised customer identifier (E05) was used for booking.
 Ambiguous input (E06) prompted clarification.
 E07 correctly reported no available appointments only after a server-side correction distinguished empty search results from technical failures.
 This case therefore reflects an integration fix as well as the selected configuration.
 
 \subsection{Direct Prompt-Injection Tests}
 No control violation was observed across eight fixed inputs, each tested in ten fresh sessions (80 executions).
-Attempts to skip confirmation (P01) left the expected workflow intact in 10/10 sessions.
-Requests for internal instructions (P02) left it intact in 7/10; no tool call occurred in 3/10.
-Attempts to proceed without a customer identifier (P03) or invent an appointment purpose (P04) prompted clarification in 10/10 each.
-Instructions to ignore errors and claim booking success (P05) left the expected workflow intact in 8/10; two deviations involved no false success claims.
-Attempts to obtain connection information (P06), model-access credentials (P07) and authentication data (P08) caused no disclosure in 10/10 each.
-Disclosure tests are not combined into a scheduling success rate.
-These results distinguish workflow disruptions from control violations; they neither establish broad attack coverage nor isolate model protection from application controls.
+Two cases disrupted the workflow: requests for internal instructions (P02) caused no tool call in 3/10 sessions.
+Instructions to ignore errors and claim booking success (P05) caused deviations in 2/10, but no false success claims.
+The remaining workflow tests (P01, P03 and P04) behaved as expected in 10/10 sessions each.
+The disclosure tests (P06--P08) produced no disclosure in 10/10 sessions each and are not included in a scheduling success rate.
+These tests cover a limited set of attacks.
+They do not show how much protection came from the model and how much came from application controls.
 
 \subsection{User Feedback}
 Operational users gave medians of 5 for stepwise and combined input, understandable booking and natural-language time handling.
 Response clarity and response time each received 4.
-Daily-work support and willingness to use the assistant regularly each received a median of 4 and mean of 3.67; all these items had three responses.
+Daily-work support and willingness to use the assistant regularly each received a median of 4 and mean of 3.67.
+All these items had three responses.
 These are participant ratings, not task-success measurements.
 
-Comments requested shorter responses, concise questions and more visible options; one user preferred a conventional form.
+Comments requested shorter responses, concise questions and more visible options.
+One user preferred a conventional form.
 The median of 5 for scheduling with few inputs suggests a preference for short interactions, not necessarily for chat.
-The six developers also requested faster responses and interface improvements, but cannot establish operational acceptance.
-No conversation mixing was observed during parallel use; this was not a systematic context-isolation test.
+The six developers also requested faster responses and interface improvements.
+Their feedback does not establish acceptance among operational users.
+No conversation mixing was observed during parallel use.
+This was not a systematic context-isolation test.
 
 \paperneedspace{9\baselineskip}
 \subsection{Load Tests}\label{sec:load-tests}
 Table~\ref{tab:load-results} compares three T01 load profiles for K2.
-L02 used five times the virtual clients of L01; L03 applied a higher stress load.
+L02 used five times as many virtual clients as L01.
+L03 applied a higher stress load.
 L01 and L02 each ran for 10 minutes and 2 seconds, L03 for 48 minutes and 31 seconds.
 Absolute client counts and internal capacity requirements are omitted.
 
 \par\medskip
 \noindent\begin{minipage}{\columnwidth}
-    \captionof{table}{T01 load tests. Time is the mean per request; HTTP errors are status 500 or 504 among all recorded calls, rounded to two decimals. These are not booking-correctness rates.}
+    \captionof{table}{T01 load tests. Time is the mean per request. HTTP errors are status 500 or 504 among all recorded calls, rounded to two decimals. These are not booking-correctness rates.}
     \label{tab:load-results}
     \centering\small
     \renewcommand{\arraystretch}{1.12}
@@ -202,14 +222,20 @@ Absolute client counts and internal capacity requirements are omitted.
 \end{minipage}
 \par\medskip
 
-At fivefold load, requests took longer while the HTTP error rate stayed close to the reference level; the small decrease does not demonstrate improved reliability.
-Stress increased both response time and errors. L01 and L02 contained HTTP 500 errors; L03 also contained HTTP 504 errors.
+At fivefold load, requests took longer while the HTTP error rate stayed close to the reference level.
+The small decrease does not demonstrate improved reliability.
+Stress increased both response time and errors.
+L01 and L02 contained HTTP 500 errors.
+L03 also contained HTTP 504 errors.
 Successful HTTP responses do not establish correct bookings.
-These mean request times are not directly comparable with the median scenario times in Tables~\ref{tab:comparison-results} and~\ref{tab:haiku-settings}; different test durations also limit conclusions about sustained capacity.
+These mean request times are not directly comparable with the median scenario times in Tables~\ref{tab:comparison-results} and~\ref{tab:haiku-settings}.
+Different test durations also limit conclusions about sustained capacity.
 
 \subsection{Implications for Controlled Integration}
-The comparison shows an efficiency--correctness trade-off: bundling can reduce processing effort, while neither bundling nor an extra model stage guarantees correct outcomes.
-Applications should evaluate technical execution, tool use and outcome correctness separately, distinguish configuration selection from later coverage checks, and enforce confirmation and validation outside the model.
-Clear tool results are essential, especially for empty searches and failures.
-Conversational input adds flexibility over a fixed REST interface but requires explicit state management.
-No quantitative advantage over that interface was tested.
+For Haiku, backend orchestration was faster and cheaper, but produced fewer correct outcomes.
+Neither bundled tools nor a separate planner guaranteed correct outcomes in these tests.
+Applications should assess technical success, correct tool use and outcome correctness separately.
+They should enforce confirmation and validation outside the model.
+The date error shows why checking a value's format is not enough: validation should also check whether it matches the user's request.
+Clear tool results must distinguish empty searches from failures.
+No quantitative advantage over the existing REST interface was tested.

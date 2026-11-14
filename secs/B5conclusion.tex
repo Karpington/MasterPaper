@@ -2,34 +2,40 @@
 % Derived from thesis chapter 7. Internal infrastructure and capacity details are omitted.
 The findings apply to the tested workflow and configurations.
 More tools, overlapping functions or longer dependencies may benefit from separate planning.
-The missing backend-without-planner variant prevents a complete comparison, and bundling changes tool granularity as well as execution location.
+Backend orchestration without a planner was not tested, so the comparison is incomplete.
+Bundling also changes how many operations each tool performs, not only where they are coordinated.
 
-Three model versions were compared on two scenarios with five regular repetitions: one run changes a success rate by 20 percentage points.
+Three model versions were compared on two scenarios with five regular repetitions.
+One run changes a success rate by 20 percentage points.
 These results support descriptive comparison, not reliable estimates for wider use.
 T01 and T02 informed both selection and settings decisions and are not independent validation.
-Later assessments cover Haiku only; prompts developed with one evaluated model family may also favour it despite shared prompts and tools within each variant.
+Later assessments cover Haiku only.
+Prompt development used one evaluated model family and may have favoured it, despite shared prompts and tools within each variant.
 
-Response times depend on external services; medians exclude technical failures and therefore use different sample sizes.
+Response times depend on external services.
+Medians exclude technical failures and therefore use different sample sizes.
 Date handling covers selected expressions, and differing load-test durations limit conclusions about sustained capacity.
-Repeated fixed injection inputs do not cover indirect attacks or establish comprehensive security, and the tests do not isolate model protection from application controls.
-Functional cases provide coverage rather than repeated-run success rates; E07 also includes an implementation fix.
+The injection tests use fixed direct inputs and do not establish comprehensive security.
+They neither cover indirect attacks nor separate model protection from application controls.
+Functional cases show which situations were checked, rather than success rates across repeated runs.
+E07 also includes an implementation fix.
 Parallel use does not verify context isolation, and brief feedback from three users and six developers cannot establish long-term operational acceptance.
 
-Omitting prompts, run-level logs and internal deployment details limits replication, though generalised cases, settings and criteria make the design inspectable.
+Prompts, individual run logs and internal deployment details are not included, which makes replication harder.
+The reported cases, settings and criteria still allow readers to assess the study design.
 Structured state, clear tool boundaries, validation and human confirmation may transfer to other processes, but require task-specific evaluation.
 
 \section{Conclusion and Future Work}\label{Sec:ConclusionAndFutureWork}
 % Derived from thesis chapter 8. No additional results are introduced.
 This paper compared three MCP-based orchestration variants in a conversational scheduling workflow.
-For the tested scenarios, Haiku with individual tools and no separate planner combined correct outcomes in all regular runs with shorter response times than its planner-based counterpart.
+In the tested scenarios, Haiku with individual tools and no separate planner produced correct outcomes in all regular runs.
+It was also faster than Haiku with individual tools and a planner.
 Backend orchestration was faster and cheaper for Haiku, but produced fewer correct outcomes.
 The comparison therefore supports assessing outcome correctness separately from successful tool execution and alongside time and cost.
 It does not establish an architecture that is best for every task.
 
 Additional assessments identified integration and usability improvements for the selected prototype, without establishing comprehensive security, long-term acceptance or production readiness.
 
-Future work should complete the comparison with backend orchestration without a planner and introduce independent scenarios, larger tool sets and more repetitions.
-
-Other LLMs should be tested with the same prompts, tool definitions and independent scenarios, documenting any adjustments needed.
-Functional and robustness checks should cover these alternatives as well as Haiku.
+Future work should add backend orchestration without a planner, independent scenarios, larger tool sets and more repetitions.
+Other models should undergo the same functional and robustness checks, with any prompt or tool changes documented.
 Longer user studies, sustained load tests and targeted context-isolation and prompt-injection checks are needed before operational use.
